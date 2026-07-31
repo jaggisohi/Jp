@@ -128,6 +128,9 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
 .vl-open-all{padding:6px 12px;border-radius:3px;font-size:10px;background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;margin-top:6px;width:100%;text-align:center}
 .vl-open-all:hover{border-color:var(--muted)}
 .vl-tip{font-size:10px;color:var(--muted);font-style:italic;margin-top:6px;line-height:1.4}
+.vl-link-row{display:flex;align-items:center;gap:4px}
+.vl-copy{background:none;border:1px solid var(--border);color:var(--muted);padding:3px 6px;border-radius:3px;font-size:10px;cursor:pointer;line-height:1;transition:color .1s,border-color .1s}
+.vl-copy:hover{color:var(--text);border-color:var(--muted)}
 
 </style>
 </head>
@@ -442,7 +445,21 @@ const DB=[
 const formula={};
 let activeFam=null;
 let batchG=10,concPct=18,phaseGrouped=false,_vlUrls=[];
-function openAllVL(){_vlUrls.forEach(u=>window.open(u,'_blank','noopener'))}
+function openAllVL(){
+  const inIframe=window!==window.top;
+  if(inIframe){
+    navigator.clipboard.writeText(_vlUrls.join('\n')).then(()=>{
+      const btn=document.querySelector('.vl-open-all');
+      if(btn){const o=btn.textContent;btn.textContent='✓ All URLs copied!';setTimeout(()=>btn.textContent=o,2500);}
+    }).catch(()=>{prompt('Copy all source URLs:',_vlUrls.join('\n'));});
+  }else{_vlUrls.forEach(u=>window.open(u,'_blank','noopener'));}
+}
+function copyVL(btn,idx){
+  navigator.clipboard.writeText(_vlUrls[idx]).then(()=>{
+    const o=btn.textContent;btn.textContent='✓';btn.style.color='var(--safe)';
+    setTimeout(()=>{btn.textContent=o;btn.style.color='';},2000);
+  }).catch(()=>{prompt('Copy this URL:',_vlUrls[idx]);});
+}
 function setBatchG(v){batchG=parseFloat(v)||10;renderFormula()}
 function setConcPct(v){if(v==='custom'){const c=prompt('Enter concentration %:','18');if(c)concPct=parseFloat(c)||18}else concPct=parseFloat(v)||18;renderFormula()}
 function togglePhaseGroup(){phaseGrouped=!phaseGrouped;const b=document.getElementById('phaseTgl');if(b)b.classList.toggle('act',phaseGrouped);renderFormula()}
@@ -475,8 +492,8 @@ function verifyLinks(m){
   const ds=m.dataSource||'';
   const links=[];
   links.push({label:'TGSC',url:`https://www.thegoodscentscompany.com/search2.php?qName=${enc}`,tier:'primary'});
-  links.push({label:'Pell Wall',url:`https://pellwall.com/?s=${rawEnc}`,tier:'secondary'});
-  links.push({label:'Fraterworks',url:`https://fraterworks.com/?s=${rawEnc}`,tier:'secondary'});
+  links.push({label:'Pell Wall',url:`https://www.pellwall.com/search?q=${rawEnc}`,tier:'secondary'});
+  links.push({label:'Fraterworks',url:`https://fraterworks.com/search?q=${rawEnc}&type=product`,tier:'secondary'});
   links.push({label:"Perfumer's App.",url:`https://shop.perfumersapprentice.com/SearchResults.aspx?st=${rawEnc}`,tier:'secondary'});
   const mfgMap={'Givaudan':`https://www.givaudan.com/search?query=${rawEnc}`,'IFF':`https://www.iff.com/search#q=${rawEnc}`,'Symrise':`https://www.symrise.com/search/?q=${rawEnc}`,'Firmenich':`https://www.dsm-firmenich.com/search?q=${rawEnc}`,'Takasago':`https://www.takasago.com/search?q=${rawEnc}`,'Bedoukian':`https://www.bedoukian.com/search?q=${rawEnc}`};
   if(ds&&mfgMap[ds])links.push({label:ds,url:mfgMap[ds],tier:'reference'});
@@ -497,17 +514,22 @@ function famColor(fam){
 
 function downloadSelf(){
   const html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  const inIframe=window!==window.top;
+  if(inIframe){
+    navigator.clipboard.writeText(html).then(()=>{
+      alert('✓ App HTML copied to clipboard!\n\nPaste into a new file called "perfumery.html" and open it in your browser for the full standalone version.');
+    }).catch(()=>{
+      alert('Download unavailable in preview mode.\n\nOpen the tool at: jaggisohi.github.io/Jp/perfumery-tool.html\n\nOr ask for the standalone HTML file.');
+    });
+    return;
+  }
   const blob=new Blob([html],{type:'text/html'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
   a.href=url;a.download='JAGLab-Perfumery-Tool.html';
   a.style.display='none';
   document.body.appendChild(a);
-  try{a.click();}catch(e){
-    const fr=new FileReader();
-    fr.onload=()=>{const w=window.open('','_blank');if(w){w.document.open();w.document.write(html);w.document.close();}};
-    fr.readAsDataURL(blob);
-  }
+  a.click();
   document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
@@ -713,24 +735,24 @@ function showProfile(id){
   const primaries=vlinks.filter(l=>l.tier==='primary');
   const secondaries=vlinks.filter(l=>l.tier==='secondary');
   const references=vlinks.filter(l=>l.tier==='reference');
+  _vlUrls=vlinks.map(l=>l.url);
   if(primaries.length){
     body+=`<div class="vl-group"><div class="vl-tier-label">Fragrance Database</div><div class="vl-row">`;
-    primaries.forEach(l=>{body+=`<a class="vl-primary" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
+    primaries.forEach(l=>{const gi=vlinks.indexOf(l);body+=`<div class="vl-link-row"><a class="vl-primary" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a><button class="vl-copy" onclick="copyVL(this,${gi})" title="Copy URL">📋</button></div>`;});
     body+=`</div></div>`;
   }
   if(secondaries.length){
     body+=`<div class="vl-group"><div class="vl-tier-label">Suppliers</div><div class="vl-row">`;
-    secondaries.forEach(l=>{body+=`<a class="vl-secondary" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
+    secondaries.forEach(l=>{const gi=vlinks.indexOf(l);body+=`<div class="vl-link-row"><a class="vl-secondary" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a><button class="vl-copy" onclick="copyVL(this,${gi})" title="Copy URL">📋</button></div>`;});
     body+=`</div></div>`;
   }
   if(references.length){
     body+=`<div class="vl-group"><div class="vl-tier-label">Manufacturer</div><div class="vl-row">`;
-    references.forEach(l=>{body+=`<a class="vl-reference" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
+    references.forEach(l=>{const gi=vlinks.indexOf(l);body+=`<div class="vl-link-row"><a class="vl-reference" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a><button class="vl-copy" onclick="copyVL(this,${gi})" title="Copy URL">📋</button></div>`;});
     body+=`</div></div>`;
   }
-  _vlUrls=vlinks.map(l=>l.url);
-  body+=`<button class="vl-open-all" onclick="openAllVL()">Open All Sources ↗</button>`;
-  body+=`<div class="vl-tip">Tip: TGSC has the most complete fragrance data. Suppliers show availability &amp; pricing.</div>`;
+  body+=`<button class="vl-open-all" onclick="openAllVL()">📋 Copy All Source URLs</button>`;
+  body+=`<div class="vl-tip">Click ↗ to open (works in browser), or 📋 to copy URL and paste in a new tab.</div>`;
   document.getElementById('pp-body').innerHTML=body;
   pp.classList.add('open');
 }

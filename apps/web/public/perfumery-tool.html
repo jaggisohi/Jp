@@ -482,20 +482,26 @@ function tgscName(n){
     .replace(/\s*\([^)]*\)/g,'')
     .replace(/\bC-(\d+)\b/g,'C$1')
     .replace(/\s+EO\b/gi,'').replace(/\s+Abs\.?\b/gi,'')
-    .replace(/\s+10%\b|\s+100%\b/g,'')
+    .replace(/\s+\d+[Xx%]\b/g,'')
+    .replace(/\s+\d+%?\s+IPM\b/gi,'')
+    .replace(/\bnatural\b/gi,'').replace(/\bsynthetic\b/gi,'')
     .replace(/\s+/g,' ').trim();
 }
 function verifyLinks(m){
   const tName=tgscName(m.name);
   const enc=encodeURIComponent(tName);
-  const rawEnc=encodeURIComponent(m.name);
+  const cas=(m.cas||'').trim();
   const ds=m.dataSource||'';
   const links=[];
-  links.push({label:'TGSC',url:`https://www.thegoodscentscompany.com/search2.php?qName=${enc}`,tier:'primary'});
-  links.push({label:'Pell Wall',url:`https://www.pellwall.com/search?q=${rawEnc}`,tier:'secondary'});
-  links.push({label:'Fraterworks',url:`https://fraterworks.com/search?q=${rawEnc}&type=product`,tier:'secondary'});
-  links.push({label:"Perfumer's App.",url:`https://shop.perfumersapprentice.com/SearchResults.aspx?st=${rawEnc}`,tier:'secondary'});
-  const mfgMap={'Givaudan':`https://www.givaudan.com/search?query=${rawEnc}`,'IFF':`https://www.iff.com/search#q=${rawEnc}`,'Symrise':`https://www.symrise.com/search/?q=${rawEnc}`,'Firmenich':`https://www.dsm-firmenich.com/search?q=${rawEnc}`,'Takasago':`https://www.takasago.com/search?q=${rawEnc}`,'Bedoukian':`https://www.bedoukian.com/search?q=${rawEnc}`};
+  // TGSC: CAS search goes straight to the exact material; falls back to name
+  const tgscUrl=cas
+    ?`https://www.thegoodscentscompany.com/search2.php?qCAS=${encodeURIComponent(cas)}`
+    :`https://www.thegoodscentscompany.com/search2.php?qName=${enc}`;
+  links.push({label:'TGSC',url:tgscUrl,tier:'primary'});
+  links.push({label:'Pell Wall',url:`https://www.pellwall.com/search?q=${enc}`,tier:'secondary'});
+  links.push({label:'Fraterworks',url:`https://fraterworks.com/search?q=${enc}&type=product`,tier:'secondary'});
+  links.push({label:"Perfumer's App.",url:`https://shop.perfumersapprentice.com/SearchResults.aspx?st=${enc}`,tier:'secondary'});
+  const mfgMap={'Givaudan':`https://www.givaudan.com/search?query=${enc}`,'IFF':`https://www.iff.com/search#q=${enc}`,'Symrise':`https://www.symrise.com/search/?q=${enc}`,'Firmenich':`https://www.dsm-firmenich.com/search?q=${enc}`,'Takasago':`https://www.takasago.com/search?q=${enc}`,'Bedoukian':`https://www.bedoukian.com/search?q=${enc}`};
   if(ds&&mfgMap[ds])links.push({label:ds,url:mfgMap[ds],tier:'reference'});
   return links;
 }
@@ -752,7 +758,7 @@ function showProfile(id){
     body+=`</div></div>`;
   }
   body+=`<button class="vl-open-all" onclick="openAllVL()">📋 Copy All Source URLs</button>`;
-  body+=`<div class="vl-tip">Click ↗ to open (works in browser), or 📋 to copy URL and paste in a new tab.</div>`;
+  body+=`<div class="vl-tip">${cas?'TGSC uses CAS# for exact match. ':''}Click ↗ to open or 📋 to copy URL and paste in a new tab.</div>`;
   document.getElementById('pp-body').innerHTML=body;
   pp.classList.add('open');
 }

@@ -127,6 +127,8 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
 .vl-reference:hover{color:var(--text);border-color:var(--muted)}
 .vl-open-all{padding:6px 12px;border-radius:3px;font-size:10px;background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;margin-top:6px;width:100%;text-align:center}
 .vl-open-all:hover{border-color:var(--muted)}
+.vl-google{padding:6px 12px;border-radius:3px;font-size:10px;background:none;color:#4285F4;border:1px solid #4285F4;cursor:pointer;margin-top:5px;width:100%;text-align:center;font-weight:600;letter-spacing:.02em}
+.vl-google:hover{background:rgba(66,133,244,.1)}
 .vl-tip{font-size:10px;color:var(--muted);font-style:italic;margin-top:6px;line-height:1.4}
 .vl-link-row{display:flex;align-items:center;gap:4px}
 .vl-copy{background:none;border:1px solid var(--border);color:var(--muted);padding:3px 6px;border-radius:3px;font-size:10px;cursor:pointer;line-height:1;transition:color .1s,border-color .1s}
@@ -466,7 +468,23 @@ const DB=[
 // STATE
 const formula={};
 let activeFam=null;
-let batchG=10,concPct=18,phaseGrouped=false,_vlUrls=[];
+let batchG=10,concPct=18,phaseGrouped=false,_vlUrls=[],_gUrl='';
+function googleSearchUrl(m){
+  const name=tgscName(m.name);
+  const cas=(m.cas||'').trim();
+  const sites='site:thegoodscentscompany.com OR site:pellwall.com OR site:fraterworks.com OR site:perfumersapprentice.com';
+  const q=cas?`"${name}" "${cas}" (${sites})`:`"${name}" fragrance perfumery (${sites})`;
+  return`https://www.google.com/search?q=${encodeURIComponent(q)}`;
+}
+function openGoogle(){
+  const inIframe=window!==window.top;
+  if(inIframe){
+    navigator.clipboard.writeText(_gUrl).then(()=>{
+      const btn=document.querySelector('.vl-google');
+      if(btn){const o=btn.textContent;btn.textContent='✓ Google URL copied — paste in new tab';setTimeout(()=>{btn.textContent=o;},3000);}
+    }).catch(()=>prompt('Copy this Google search URL:',_gUrl));
+  }else{window.open(_gUrl,'_blank','noopener');}
+}
 function openAllVL(){
   const inIframe=window!==window.top;
   if(inIframe){
@@ -780,7 +798,9 @@ function showProfile(id){
     body+=`</div></div>`;
   }
   body+=`<button class="vl-open-all" onclick="openAllVL()">📋 Copy All Source URLs</button>`;
-  body+=`<div class="vl-tip">${cas?'TGSC uses CAS# for exact match. ':''}Click ↗ to open or 📋 to copy URL and paste in a new tab.</div>`;
+  _gUrl=googleSearchUrl(m);
+  body+=`<button class="vl-google" onclick="openGoogle()">🔍 Google Search — TGSC · Pell Wall · Fraterworks · PA</button>`;
+  body+=`<div class="vl-tip">${cas?'TGSC uses CAS# for exact match. ':''}Click ↗ to open or 📋 to copy URL. In the preview, buttons copy URLs to paste in a new tab.</div>`;
   document.getElementById('pp-body').innerHTML=body;
   pp.classList.add('open');
 }

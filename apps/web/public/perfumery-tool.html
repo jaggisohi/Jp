@@ -109,6 +109,18 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
 .pp-link{padding:4px 9px;border-radius:3px;font-size:10px;background:var(--card);color:var(--accent);text-decoration:none;border:1px solid var(--border);white-space:nowrap}
 .pp-link:hover{border-color:var(--accent)}
 .pp-section{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:10px 0 5px;padding-top:8px;border-top:1px solid var(--border)}
+.vl-group{margin-bottom:7px}
+.vl-tier-label{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:4px}
+.vl-row{display:flex;gap:5px;flex-wrap:wrap}
+.vl-primary{padding:5px 10px;border-radius:3px;font-size:10px;background:var(--accent);color:#0F0E0D;text-decoration:none;white-space:nowrap;font-weight:600;display:inline-block}
+.vl-primary:hover{opacity:.82}
+.vl-secondary{padding:5px 10px;border-radius:3px;font-size:10px;background:none;color:var(--accent);text-decoration:none;border:1px solid var(--accent-dim);white-space:nowrap;display:inline-block}
+.vl-secondary:hover{border-color:var(--accent)}
+.vl-reference{padding:5px 10px;border-radius:3px;font-size:10px;background:none;color:var(--muted);text-decoration:none;border:1px solid var(--border);white-space:nowrap;display:inline-block}
+.vl-reference:hover{color:var(--text);border-color:var(--muted)}
+.vl-open-all{padding:6px 12px;border-radius:3px;font-size:10px;background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;margin-top:6px;width:100%;text-align:center}
+.vl-open-all:hover{border-color:var(--muted)}
+.vl-tip{font-size:10px;color:var(--muted);font-style:italic;margin-top:6px;line-height:1.4}
 
 </style>
 </head>
@@ -421,7 +433,8 @@ const DB=[
 // STATE
 const formula={};
 let activeFam=null;
-let batchG=10,concPct=18,phaseGrouped=false;
+let batchG=10,concPct=18,phaseGrouped=false,_vlUrls=[];
+function openAllVL(){_vlUrls.forEach(u=>window.open(u,'_blank','noopener'))}
 function setBatchG(v){batchG=parseFloat(v)||10;renderFormula()}
 function setConcPct(v){if(v==='custom'){const c=prompt('Enter concentration %:','18');if(c)concPct=parseFloat(c)||18}else concPct=parseFloat(v)||18;renderFormula()}
 function togglePhaseGroup(){phaseGrouped=!phaseGrouped;const b=document.getElementById('phaseTgl');if(b)b.classList.toggle('act',phaseGrouped);renderFormula()}
@@ -439,6 +452,18 @@ function tStr(t){return t===null||t===undefined?'—':t+'h'}
 function iStr(i){return i===null||i===undefined?'—':String(Math.round(i))}
 function tierFromH(h){if(h===null||h===undefined)return'—';if(h<30)return'Short';if(h<100)return'Medium';if(h<250)return'Long';if(h<750)return'Very long';return'Extreme'}
 function roleColor(r){const m={Modifier:'#5C6BC0',Fixative:'#C9A96E',Heart:'#5FAF65',Blender:'#90A4AE'};return m[r]||'#757575'}
+function verifyLinks(m){
+  const cas=m.cas,enc=encodeURIComponent(m.name),hasCas=cas&&/^\d/.test(cas);
+  const links=[];
+  if(hasCas){
+    links.push({label:'PubChem',url:`https://pubchem.ncbi.nlm.nih.gov/compound/${encodeURIComponent(cas)}`,tier:'primary'});
+    links.push({label:'ChemSpider',url:`https://www.chemspider.com/Search.aspx?q=${encodeURIComponent(cas)}`,tier:'primary'});
+  }
+  links.push({label:'TGSC',url:`https://www.thegoodscentscompany.com/search2.php?qName=${enc}`,tier:'secondary'});
+  links.push({label:'Sigma-Aldrich',url:`https://www.sigmaaldrich.com/US/en/search#q=${enc}&t=all`,tier:'secondary'});
+  links.push({label:'IFRA Library',url:'https://ifrafragrance.org/safe-use/library',tier:'reference'});
+  return links;
+}
 function calcPW(m,p){const pf=m.percepFactor!==null&&m.percepFactor!==undefined?m.percepFactor:(m.impact!==null&&m.impact!==undefined?m.impact/100:1);return p*(pf||1)}
 function totalPW(){return fKeys().reduce((s,id)=>{const m=byId(id);return s+(m?calcPW(m,pOf(id)):0)},0)}
 
@@ -507,7 +532,7 @@ function addMat(id){
     if(m.ifra!==null&&def>m.ifra)def=m.ifra;
     formula[id]=String(def);
   }
-  renderFormula();renderMats();
+  renderFormula();renderMats();showProfile(id);
 }
 
 function removeMat(id){delete formula[id];renderFormula();renderMats()}
@@ -642,11 +667,25 @@ function showProfile(id){
   }
   if(m.pwNote){body+=`<div style="font-size:10px;color:var(--muted);margin-top:6px">${m.pwNote}</div>`;}
   body+=`<div class="pp-section">Verify Online</div>`;
-  body+=`<div class="pp-links">`;
-  if(cas&&/^\d/.test(cas))body+=`<a class="pp-link" href="https://pubchem.ncbi.nlm.nih.gov/compound/${encodeURIComponent(cas)}" target="_blank" rel="noopener">PubChem ↗</a>`;
-  body+=`<a class="pp-link" href="https://www.thegoodscentscompany.com/search2.php?qName=${encodeURIComponent(m.name)}" target="_blank" rel="noopener">TGSC ↗</a>`;
-  body+=`<a class="pp-link" href="https://ifrafragrance.org/safe-use/library" target="_blank" rel="noopener">IFRA ↗</a>`;
-  body+=`</div>`;
+  const vlinks=verifyLinks(m);
+  const hasCas=cas&&/^\d/.test(cas);
+  const primaries=vlinks.filter(l=>l.tier==='primary');
+  const secondaries=vlinks.filter(l=>l.tier==='secondary');
+  const references=vlinks.filter(l=>l.tier==='reference');
+  if(primaries.length){
+    body+=`<div class="vl-group"><div class="vl-tier-label">Primary · CAS-based</div><div class="vl-row">`;
+    primaries.forEach(l=>{body+=`<a class="vl-primary" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
+    body+=`</div></div>`;
+  }
+  body+=`<div class="vl-group"><div class="vl-tier-label">Secondary · by Name</div><div class="vl-row">`;
+  secondaries.forEach(l=>{body+=`<a class="vl-secondary" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
+  body+=`</div></div>`;
+  body+=`<div class="vl-group"><div class="vl-tier-label">Reference</div><div class="vl-row">`;
+  references.forEach(l=>{body+=`<a class="vl-reference" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
+  body+=`</div></div>`;
+  _vlUrls=vlinks.map(l=>l.url);
+  body+=`<button class="vl-open-all" onclick="openAllVL()">Open All Sources ↗</button>`;
+  if(hasCas)body+=`<div class="vl-tip">Tip: open top-to-bottom — if Source 1 has no data, try Source 2.</div>`;
   document.getElementById('pp-body').innerHTML=body;
   pp.classList.add('open');
 }

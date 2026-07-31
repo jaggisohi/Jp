@@ -205,7 +205,7 @@ const DB=[
 {id:'aldc14_peach',name:'Ald C14 Peach',fam:'Aldehydes+Esters',note:'heart',desc:'Peach apricot, slightly coconut',ifra:null,rMin:.05,rMax:1,indolic:false,sens:false,tenacity:340,impact:360},
 {id:'aldc19',name:'Ald C19',fam:'Aldehydes+Esters',note:'heart',desc:'Fresh aldehydic, iris-like, powdery',ifra:null,rMin:.05,rMax:.5,indolic:false,sens:false,tenacity:null,impact:null},
 {id:'allyl_amyl_glycolate',name:'Allyl Amyl Glycolate',fam:'Aldehydes+Esters',note:'top',desc:'Pineapple-green, powerful — Cat4: 0.002%',ifra:.002,rMin:.0002,rMax:.002,indolic:false,sens:true,tenacity:84,impact:170},
-{id:'allyl_caproate_c6',name:'Allyl Caproate C6',fam:'Aldehydes+Esters',note:'top',desc:'Pineapple, tropical, fruity',ifra:null,rMin:.05,rMax:1,indolic:false,sens:false,tenacity:1,impact:250},
+{id:'allyl_caproate_c6',name:'Allyl Caproate C6',fam:'Aldehydes+Esters',note:'top',desc:'Pineapple, tropical, fruity',ifra:null,rMin:.05,rMax:1,indolic:false,sens:false,tenacity:1,impact:250,cas:'123-68-2'},
 {id:'benzyl_acetate',name:'Benzyl Acetate',fam:'Aldehydes+Esters',note:'heart',desc:'Jasmine, floral, fruity sweet — Cat4: 7%',ifra:7,rMin:.5,rMax:8,indolic:false,sens:false,tenacity:4,impact:120},
 {id:'benzyl_benzoate',name:'Benzyl Benzoate',fam:'Aldehydes+Esters',note:'base',desc:'Faint balsamic, fixative solvent',ifra:null,rMin:.5,rMax:15,indolic:false,sens:true,tenacity:322,impact:18},
 {id:'benzyl_salicylate',name:'Benzyl Salicylate',fam:'Aldehydes+Esters',note:'base',desc:'Soft balsamic floral fixer — Cat4: 2%',ifra:2,rMin:.5,rMax:5,indolic:false,sens:true,tenacity:384,impact:30},
@@ -438,7 +438,29 @@ const DB=[
 {id:'nutmeg_eo',name:'Nutmeg EO',fam:'Misc',note:'heart',desc:'Warm spice, woody slightly floral',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:48,impact:90},
 {id:'white_thyme_eo',name:'White Thyme EO',fam:'Misc',note:'heart',desc:'Herbal thymol, medicinal',ifra:null,rMin:.1,rMax:3,indolic:false,sens:false,tenacity:24,impact:570},
 {id:'allspice_eo',name:'Allspice EO',fam:'Misc',note:'heart',desc:'Warm clove-cinnamon-nutmeg blend',ifra:null,rMin:.1,rMax:3,indolic:false,sens:false,tenacity:24,impact:130},
-{id:'fennel_eo',name:'Fennel EO',fam:'Misc',note:'top',desc:'Anise-like herbal, slightly sweet',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:24,impact:180,cas:'8006-84-6',subFam:'Anisic',role:'Modifier',percepFactor:1.8,primaryFam:'Spice',secondaryFam:'Iceberg/Mint-Camphor',pwNote:'Fennel Sweet Essential Oil',dataSource:'PW'}
+{id:'fennel_eo',name:'Fennel EO',fam:'Misc',note:'top',desc:'Anise-like herbal, slightly sweet',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:24,impact:180,cas:'8006-84-6',subFam:'Anisic',role:'Modifier',percepFactor:1.8,primaryFam:'Spice',secondaryFam:'Iceberg/Mint-Camphor',pwNote:'Fennel Sweet Essential Oil',dataSource:'PW'},
+// PALETTE ADDITIONS
+{id:'basil_eo',name:'Basil EO',fam:'Lav+Aromatic',note:'top',desc:'Fresh green herbal, anise-basil facets',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:4,impact:150},
+{id:'calone',name:'Calone',fam:'Misc',note:'heart',desc:'Ozonic marine watermelon — use ultra-sparingly',ifra:null,rMin:.01,rMax:.5,indolic:false,sens:false,tenacity:600,impact:800,cas:'28940-11-6'},
+{id:'cardamom_eo',name:'Cardamom EO',fam:'Misc',note:'top',desc:'Warm spicy, slightly sweet, slightly floral',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:12,impact:300},
+{id:'cashmeran',name:'Cashmeran',fam:'Musks',note:'heart',desc:'Cashmere-like warm woody musk, spicy edge',ifra:null,rMin:.5,rMax:8,indolic:false,sens:false,tenacity:200,impact:80,cas:'33704-61-9'},
+{id:'cedramber_iff',name:'Cedramber IFF',fam:'Woods',note:'heart',desc:'Cedarwood-amber, dry woody diffusive',ifra:null,rMin:.5,rMax:8,indolic:false,sens:false,tenacity:125,impact:120},
+{id:'cinnamon_bark_eo',name:'Cinnamon Bark EO',fam:'Misc',note:'heart',desc:'Warm cinnamon, sweet spicy — Cat4: 0.2%',ifra:.2,rMin:.01,rMax:.2,indolic:false,sens:true,tenacity:140,impact:150},
+{id:'cis3_hexenol',name:'Cis-3-Hexenol',fam:'Misc',note:'top',desc:'Fresh-cut green grass, leafy, powerful',ifra:null,rMin:.05,rMax:2,indolic:false,sens:false,tenacity:4,impact:700,cas:'928-96-1'},
+{id:'cis3_hexenyl_sal',name:'Cis-3-Hexenyl Salicylate',fam:'Aldehydes+Esters',note:'heart',desc:'Green leafy floral, fresh herbal',ifra:null,rMin:.1,rMax:5,indolic:false,sens:false,tenacity:216,impact:90,cas:'65405-77-8'},
+{id:'cyclamen_aldehyde',name:'Cyclamen Aldehyde',fam:'Aldehydes+Esters',note:'top',desc:'Violet-lilac aldehydic, watery cyclamen',ifra:null,rMin:.05,rMax:2,indolic:false,sens:false,tenacity:72,impact:75,cas:'103-95-7'},
+{id:'damascone_alpha',name:'Damascone Alpha',fam:'Rose',note:'heart',desc:'Rose fruity, apple-rose, highly diffusive',ifra:null,rMin:.05,rMax:2,indolic:false,sens:false,tenacity:60,impact:700,cas:'24720-09-0'},
+{id:'damascone_beta',name:'Damascone Beta',fam:'Rose',note:'heart',desc:'Rose spicy woody, dried-rose character',ifra:null,rMin:.05,rMax:2,indolic:false,sens:false,tenacity:190,impact:450,cas:'23726-93-4'},
+{id:'dihydro_myrcenol',name:'Dihydro Myrcenol',fam:'Misc',note:'top',desc:'Fresh citrus-lime, clean, pine facet',ifra:null,rMin:.5,rMax:10,indolic:false,sens:false,tenacity:16,impact:100,cas:'18479-58-8'},
+{id:'floralozone',name:'Floralozone',fam:'Misc',note:'heart',desc:'Ozonic floral, cyclohexyl, watery fresh',ifra:null,rMin:.1,rMax:5,indolic:false,sens:false,tenacity:80,impact:100,cas:'67634-15-5'},
+{id:'frankincense_eo',name:'Frankincense EO',fam:'Naturals',note:'top',desc:'Incense, citrus-resinous, balsamic olibanum',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:188,impact:50},
+{id:'geranyl_acetate',name:'Geranyl Acetate',fam:'Aldehydes+Esters',note:'top',desc:'Rose-geranium fruity, sweet waxy',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:24,impact:125,cas:'105-87-3'},
+{id:'labdanum_abs',name:'Labdanum Abs',fam:'Naturals',note:'heart',desc:'Amber cistus, sweet animalic, complex',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:100,impact:200},
+{id:'labdanum_eo',name:'Labdanum EO',fam:'Naturals',note:'top',desc:'Warm amber, cistus, slightly earthy resinous',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:400,impact:600},
+{id:'labdanum_resinoid',name:'Labdanum Resinoid',fam:'Naturals',note:'heart',desc:'Amber cistus, sweet-earthy, balsamic',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:65,impact:400},
+{id:'phenyl_ethyl_acetate',name:'Phenyl Ethyl Acetate',fam:'Aldehydes+Esters',note:'top',desc:'Rose-honey fruity, sweet floral',ifra:null,rMin:.2,rMax:5,indolic:false,sens:false,tenacity:16,impact:90,cas:'103-45-7'},
+{id:'stemone',name:'Stemone',fam:'Misc',note:'top',desc:'Grapefruit-violet, citrus-iris, highly diffusive',ifra:null,rMin:.05,rMax:2,indolic:false,sens:false,tenacity:16,impact:1000},
+{id:'cedarwood_virginian_eo',name:'Cedarwood Virginian EO',fam:'Woods',note:'top',desc:'Dry cedar, pencil-shavings, warm woody',ifra:null,rMin:.5,rMax:10,indolic:false,sens:false,tenacity:32,impact:90}
 ];
 
 // STATE

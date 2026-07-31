@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#C9A96E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JAG Lab">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>JAG Lab — Perfumery Formula Tool</title>
 <style>
 :root{--bg:#0F0E0D;--surface:#1B1916;--card:#242220;--border:#2E2B28;--text:#EDE8E1;--muted:#857E76;--accent:#C9A96E;--accent-dim:#7A5C2E;--warn:#E08030;--danger:#D04040;--safe:#5FAF65;--pill:#252220}
@@ -129,6 +135,7 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
   <h1>JAG Lab · Formula Tool</h1>
   <span id="mc">227 materials</span>
   <button class="tbtn" onclick="toggleTheme()">Theme</button>
+  <button class="tbtn" onclick="downloadSelf()" title="Download offline copy">⬇ Download</button>
 </header>
 <div class="app">
   <div class="panel">
@@ -477,6 +484,15 @@ function famColor(fam){
   return m[fam]||'#888';
 }
 
+function downloadSelf(){
+  const html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='JAGLab-Perfumery-Tool.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
 function toggleTheme(){
   const r=document.documentElement;
   r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
@@ -837,5 +853,10 @@ function analyseFormula(){
 renderPills();renderMats();renderFormula();
 </script>
 <div id="pp"><div class="pp-head"><div class="pp-name" id="pp-name"></div><button class="pp-close" onclick="closeProfile()">×</button></div><div id="pp-body"></div></div>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
 </body>
 </html>

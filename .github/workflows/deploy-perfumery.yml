@@ -1,0 +1,26 @@
+name: Deploy Perfumery Tool to GitHub Pages
+
+on:
+  push:
+    branches: [main, claude/github-install-check-ulvb0o]
+    paths:
+      - 'apps/web/public/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./apps/web/public
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: 'deploy: JAG Lab Perfumery Tool'

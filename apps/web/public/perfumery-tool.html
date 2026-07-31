@@ -16,7 +16,7 @@
 :root[data-theme="dark"]{--bg:#0F0E0D;--surface:#1B1916;--card:#242220;--border:#2E2B28;--text:#EDE8E1;--muted:#857E76;--accent:#C9A96E;--accent-dim:#7A5C2E;--warn:#E08030;--danger:#D04040;--safe:#5FAF65;--pill:#252220}
 :root[data-theme="light"]{--bg:#F4F0EA;--surface:#FFFFFF;--card:#EDE8DF;--border:#D5CEC4;--text:#1C1814;--muted:#7A7068;--accent:#8B5C1A;--accent-dim:#C49040;--warn:#B85A00;--danger:#B02020;--safe:#3A8040;--pill:#E8E2D8}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Georgia,serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+body{font-family:Georgia,serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
 header h1{font-size:15px;font-weight:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);flex:1}
 header span{font-size:11px;color:var(--muted);font-family:monospace}
@@ -36,13 +36,13 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
 .fp{padding:3px 8px;border-radius:20px;font-size:9px;letter-spacing:.04em;cursor:pointer;border:1px solid transparent;background:var(--pill);color:var(--muted);transition:all .12s;white-space:nowrap}
 .fp:hover{color:var(--text)}
 .fp.act{color:#0F0E0D!important}
-.ml{display:flex;flex-direction:column;gap:1px}
-.mi{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:3px;cursor:pointer;border:1px solid transparent;transition:background .1s}
+.ml{display:flex;flex-direction:column;gap:2px}
+.mi{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:4px;cursor:pointer;border:1px solid transparent;transition:background .1s}
 .mi:hover{background:var(--card)}
 .mi.inf{background:var(--card);border-color:var(--border)}
-.md{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.mn{font-size:12px}
-.mf{font-size:9px;color:var(--muted)}
+.md{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.mn{font-size:13px;font-weight:600}
+.mf{font-size:10px;color:var(--muted)}
 .mnote{font-size:9px;text-transform:uppercase;color:var(--muted);width:14px;text-align:right}
 .ftitle{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .ftitle input{flex:1;background:none;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:14px;padding:2px 0;outline:none}
@@ -58,11 +58,11 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
 .pc .pv{font-size:16px;font-variant-numeric:tabular-nums;display:block}
 .pc .pp{font-size:9px;color:var(--muted)}
 .fi-list{display:flex;flex-direction:column;gap:4px}
-.fi{display:flex;align-items:center;gap:5px;padding:7px 8px;background:var(--card);border-radius:3px;border-left:3px solid transparent}
-.fin{flex:1;font-size:12px}
-.fif{font-size:9px;color:var(--muted)}
-.fip{font-variant-numeric:tabular-nums;font-size:12px;color:var(--accent);width:36px;text-align:right}
-.fii{width:58px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:3px 5px;font-size:12px;border-radius:3px;text-align:right;outline:none;font-variant-numeric:tabular-nums}
+.fi{display:flex;align-items:center;gap:5px;padding:8px 9px;background:var(--card);border-radius:4px;border-left:3px solid transparent}
+.fin{flex:1;font-size:13px;font-weight:600}
+.fif{font-size:10px;color:var(--muted)}
+.fip{font-variant-numeric:tabular-nums;font-size:13px;color:var(--accent);width:40px;text-align:right}
+.fii{width:62px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:3px 6px;font-size:13px;border-radius:3px;text-align:right;outline:none;font-variant-numeric:tabular-nums}
 .fii:focus{border-color:var(--accent-dim)}
 .fdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 4px;border-radius:2px;line-height:1}
 .fdel:hover{color:var(--danger)}
@@ -99,22 +99,23 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
 .ph-tgl{background:none;border:1px solid var(--border);color:var(--muted);padding:2px 7px;border-radius:3px;font-size:9px;cursor:pointer;letter-spacing:.04em}
 .ph-tgl.act{background:var(--accent-dim);color:var(--bg);border-color:transparent}
 .fi-phase-hdr{font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:8px 8px 3px;border-bottom:1px solid var(--border);margin-bottom:3px}
-#pp{position:fixed;top:45px;right:0;width:300px;height:calc(100vh - 45px);background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;z-index:300;padding:14px;transform:translateX(100%);transition:transform .2s ease}
-#pp.open{transform:translateX(0)}
-.pp-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
-.pp-name{flex:1;font-size:14px;font-weight:600;line-height:1.3}
-.pp-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:0 2px;line-height:1;flex-shrink:0}
+#pp{position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px;visibility:hidden;opacity:0;transition:opacity .2s,visibility .2s}
+#pp.open{visibility:visible;opacity:1}
+.pp-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;width:min(440px,100%);max-height:calc(100vh - 32px);overflow-y:auto;padding:18px;position:relative}
+.pp-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:12px}
+.pp-name{flex:1;font-size:16px;font-weight:700;line-height:1.3}
+.pp-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;padding:0 2px;line-height:1;flex-shrink:0}
 .pp-close:hover{color:var(--text)}
-.pp-chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
-.pp-chip{padding:2px 8px;border-radius:20px;font-size:9px;letter-spacing:.04em}
-.pp-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
-.pp-field dt{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:2px}
-.pp-field dd{font-size:11px}
-.pp-desc{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.pp-chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.pp-chip{padding:3px 9px;border-radius:20px;font-size:10px;letter-spacing:.04em}
+.pp-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.pp-field dt{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:2px}
+.pp-field dd{font-size:12px}
+.pp-desc{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.55;padding-bottom:9px;border-bottom:1px solid var(--border)}
 .pp-links{display:flex;gap:6px;flex-wrap:wrap}
 .pp-link{padding:4px 9px;border-radius:3px;font-size:10px;background:var(--card);color:var(--accent);text-decoration:none;border:1px solid var(--border);white-space:nowrap}
 .pp-link:hover{border-color:var(--accent)}
-.pp-section{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:10px 0 5px;padding-top:8px;border-top:1px solid var(--border)}
+.pp-section{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:12px 0 6px;padding-top:9px;border-top:1px solid var(--border)}
 .vl-group{margin-bottom:7px}
 .vl-tier-label{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:4px}
 .vl-row{display:flex;gap:5px;flex-wrap:wrap}
@@ -459,16 +460,26 @@ function tStr(t){return t===null||t===undefined?'—':t+'h'}
 function iStr(i){return i===null||i===undefined?'—':String(Math.round(i))}
 function tierFromH(h){if(h===null||h===undefined)return'—';if(h<30)return'Short';if(h<100)return'Medium';if(h<250)return'Long';if(h<750)return'Very long';return'Extreme'}
 function roleColor(r){const m={Modifier:'#5C6BC0',Fixative:'#C9A96E',Heart:'#5FAF65',Blender:'#90A4AE'};return m[r]||'#757575'}
+function tgscName(n){
+  return n
+    .replace(/\s*\([^)]*\)/g,'')
+    .replace(/\bC-(\d+)\b/g,'C$1')
+    .replace(/\s+EO\b/gi,'').replace(/\s+Abs\.?\b/gi,'')
+    .replace(/\s+10%\b|\s+100%\b/g,'')
+    .replace(/\s+/g,' ').trim();
+}
 function verifyLinks(m){
-  const cas=m.cas,enc=encodeURIComponent(m.name),hasCas=cas&&/^\d/.test(cas);
+  const tName=tgscName(m.name);
+  const enc=encodeURIComponent(tName);
+  const rawEnc=encodeURIComponent(m.name);
+  const ds=m.dataSource||'';
   const links=[];
-  if(hasCas){
-    links.push({label:'PubChem',url:`https://pubchem.ncbi.nlm.nih.gov/compound/${encodeURIComponent(cas)}`,tier:'primary'});
-    links.push({label:'ChemSpider',url:`https://www.chemspider.com/Search.aspx?q=${encodeURIComponent(cas)}`,tier:'primary'});
-  }
-  links.push({label:'TGSC',url:`https://www.thegoodscentscompany.com/search2.php?qName=${enc}`,tier:'secondary'});
-  links.push({label:'Sigma-Aldrich',url:`https://www.sigmaaldrich.com/US/en/search#q=${enc}&t=all`,tier:'secondary'});
-  links.push({label:'IFRA Library',url:'https://ifrafragrance.org/safe-use/library',tier:'reference'});
+  links.push({label:'TGSC',url:`https://www.thegoodscentscompany.com/search2.php?qName=${enc}`,tier:'primary'});
+  links.push({label:'Pell Wall',url:`https://pellwall.com/?s=${rawEnc}`,tier:'secondary'});
+  links.push({label:'Fraterworks',url:`https://fraterworks.com/?s=${rawEnc}`,tier:'secondary'});
+  links.push({label:"Perfumer's App.",url:`https://shop.perfumersapprentice.com/SearchResults.aspx?st=${rawEnc}`,tier:'secondary'});
+  const mfgMap={'Givaudan':`https://www.givaudan.com/search?query=${rawEnc}`,'IFF':`https://www.iff.com/search#q=${rawEnc}`,'Symrise':`https://www.symrise.com/search/?q=${rawEnc}`,'Firmenich':`https://www.dsm-firmenich.com/search?q=${rawEnc}`,'Takasago':`https://www.takasago.com/search?q=${rawEnc}`,'Bedoukian':`https://www.bedoukian.com/search?q=${rawEnc}`};
+  if(ds&&mfgMap[ds])links.push({label:ds,url:mfgMap[ds],tier:'reference'});
   return links;
 }
 function calcPW(m,p){const pf=m.percepFactor!==null&&m.percepFactor!==undefined?m.percepFactor:(m.impact!==null&&m.impact!==undefined?m.impact/100:1);return p*(pf||1)}
@@ -487,11 +498,18 @@ function famColor(fam){
 function downloadSelf(){
   const html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
   const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='JAGLab-Perfumery-Tool.html';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  a.href=url;a.download='JAGLab-Perfumery-Tool.html';
+  a.style.display='none';
+  document.body.appendChild(a);
+  try{a.click();}catch(e){
+    const fr=new FileReader();
+    fr.onload=()=>{const w=window.open('','_blank');if(w){w.document.open();w.document.write(html);w.document.close();}};
+    fr.readAsDataURL(blob);
+  }
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
 function toggleTheme(){
   const r=document.documentElement;
@@ -519,6 +537,14 @@ function renderMats(){
     if(activeFam&&m.fam!==activeFam)return false;
     if(!q)return true;
     return m.name.toLowerCase().includes(q)||m.fam.toLowerCase().includes(q)||m.desc.toLowerCase().includes(q);
+  });
+  const noteOrd={top:0,heart:1,base:2};
+  filtered.sort((a,b)=>{
+    const nd=(noteOrd[a.note]??99)-(noteOrd[b.note]??99);
+    if(nd!==0)return nd;
+    const at=a.tenacity==null?Infinity:a.tenacity;
+    const bt=b.tenacity==null?Infinity:b.tenacity;
+    return at-bt;
   });
   const list=document.getElementById('ml');
   if(!filtered.length){list.innerHTML='<div class="es">No materials found</div>';return}
@@ -684,24 +710,27 @@ function showProfile(id){
   if(m.pwNote){body+=`<div style="font-size:10px;color:var(--muted);margin-top:6px">${m.pwNote}</div>`;}
   body+=`<div class="pp-section">Verify Online</div>`;
   const vlinks=verifyLinks(m);
-  const hasCas=cas&&/^\d/.test(cas);
   const primaries=vlinks.filter(l=>l.tier==='primary');
   const secondaries=vlinks.filter(l=>l.tier==='secondary');
   const references=vlinks.filter(l=>l.tier==='reference');
   if(primaries.length){
-    body+=`<div class="vl-group"><div class="vl-tier-label">Primary · CAS-based</div><div class="vl-row">`;
+    body+=`<div class="vl-group"><div class="vl-tier-label">Fragrance Database</div><div class="vl-row">`;
     primaries.forEach(l=>{body+=`<a class="vl-primary" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
     body+=`</div></div>`;
   }
-  body+=`<div class="vl-group"><div class="vl-tier-label">Secondary · by Name</div><div class="vl-row">`;
-  secondaries.forEach(l=>{body+=`<a class="vl-secondary" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
-  body+=`</div></div>`;
-  body+=`<div class="vl-group"><div class="vl-tier-label">Reference</div><div class="vl-row">`;
-  references.forEach(l=>{body+=`<a class="vl-reference" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
-  body+=`</div></div>`;
+  if(secondaries.length){
+    body+=`<div class="vl-group"><div class="vl-tier-label">Suppliers</div><div class="vl-row">`;
+    secondaries.forEach(l=>{body+=`<a class="vl-secondary" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
+    body+=`</div></div>`;
+  }
+  if(references.length){
+    body+=`<div class="vl-group"><div class="vl-tier-label">Manufacturer</div><div class="vl-row">`;
+    references.forEach(l=>{body+=`<a class="vl-reference" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;});
+    body+=`</div></div>`;
+  }
   _vlUrls=vlinks.map(l=>l.url);
   body+=`<button class="vl-open-all" onclick="openAllVL()">Open All Sources ↗</button>`;
-  if(hasCas)body+=`<div class="vl-tip">Tip: open top-to-bottom — if Source 1 has no data, try Source 2.</div>`;
+  body+=`<div class="vl-tip">Tip: TGSC has the most complete fragrance data. Suppliers show availability &amp; pricing.</div>`;
   document.getElementById('pp-body').innerHTML=body;
   pp.classList.add('open');
 }
@@ -852,7 +881,7 @@ function analyseFormula(){
 
 renderPills();renderMats();renderFormula();
 </script>
-<div id="pp"><div class="pp-head"><div class="pp-name" id="pp-name"></div><button class="pp-close" onclick="closeProfile()">×</button></div><div id="pp-body"></div></div>
+<div id="pp" onclick="if(event.target===this)closeProfile()"><div class="pp-card"><div class="pp-head"><div class="pp-name" id="pp-name"></div><button class="pp-close" onclick="closeProfile()">×</button></div><div id="pp-body"></div></div></div>
 <script>
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});

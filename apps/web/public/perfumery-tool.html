@@ -133,6 +133,46 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
 .vl-link-row{display:flex;align-items:center;gap:4px}
 .vl-copy{background:none;border:1px solid var(--border);color:var(--muted);padding:3px 6px;border-radius:3px;font-size:10px;cursor:pointer;line-height:1;transition:color .1s,border-color .1s}
 .vl-copy:hover{color:var(--text);border-color:var(--muted)}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:600;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:16px;visibility:hidden;opacity:0;transition:opacity .2s,visibility .2s}
+.modal-overlay.open{visibility:visible;opacity:1}
+.modal-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;width:min(500px,100%);max-height:calc(100vh - 32px);overflow-y:auto;padding:18px;position:relative}
+.modal-head{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.modal-title{flex:1;font-size:14px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;padding:0 2px;line-height:1}
+.modal-close:hover{color:var(--text)}
+.lib-item{display:flex;align-items:center;gap:8px;padding:8px;border-radius:4px;border:1px solid var(--border);margin-bottom:5px;background:var(--card)}
+.lib-item-name{flex:1;font-size:13px;font-weight:600}
+.lib-item-meta{font-size:10px;color:var(--muted)}
+.lib-btn{padding:3px 8px;border-radius:3px;font-size:10px;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted)}
+.lib-btn:hover{color:var(--text)}
+.import-ta{width:100%;height:120px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:12px;font-family:monospace;padding:8px;border-radius:3px;outline:none;resize:vertical;margin:8px 0}
+.import-ta:focus{border-color:var(--accent-dim)}
+.import-result{margin-top:8px;font-size:11px;display:flex;flex-direction:column;gap:3px;max-height:180px;overflow-y:auto}
+.import-matched{padding:3px 7px;border-radius:3px;background:rgba(95,175,101,.1);border-left:2px solid var(--safe);font-size:11px}
+.import-unmatched{padding:3px 7px;border-radius:3px;background:rgba(208,64,64,.1);border-left:2px solid var(--danger);color:var(--muted);font-size:11px}
+.presets-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.preset-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:10px 12px;cursor:pointer;transition:border-color .1s}
+.preset-card:hover{border-color:var(--accent-dim)}
+.preset-em{font-size:20px;margin-bottom:4px}
+.preset-name{font-size:12px;font-weight:700;margin-bottom:2px}
+.preset-desc{font-size:10px;color:var(--muted);line-height:1.4}
+.undo-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:3px 8px;cursor:pointer;border-radius:3px;font-size:13px;line-height:1}
+.undo-btn:hover:not(:disabled){color:var(--text);border-color:var(--muted)}
+.undo-btn:disabled{opacity:.3;cursor:default}
+.safety-badge{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:4px;margin-bottom:8px;font-size:11px;border:1px solid}
+.safety-badge.ok{background:rgba(95,175,101,.1);border-color:var(--safe)}
+.safety-badge.warn{background:rgba(224,128,48,.1);border-color:var(--warn)}
+.safety-badge.danger{background:rgba(208,64,64,.1);border-color:var(--danger)}
+.safety-score{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;min-width:44px;text-align:right}
+.drydown-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:10px}
+.drydown-name{width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+.drydown-bar{flex:1;height:9px;border-radius:2px;position:relative;background:var(--border)}
+.drydown-fill{height:100%;border-radius:2px;position:absolute;left:0;top:0}
+.dil-in{width:38px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:2px 4px;font-size:10px;border-radius:3px;text-align:right;outline:none;font-variant-numeric:tabular-nums}
+.dil-in:focus{border-color:var(--accent-dim)}
+.sub-item{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:3px;border:1px solid var(--border);margin-bottom:3px;cursor:pointer;font-size:11px;background:var(--card)}
+.sub-item:hover{border-color:var(--accent-dim)}
+@media print{header,.modal-overlay,#pp,.panel:first-child,.panel:last-child,.ar,.gi-bar{display:none!important}.app{display:block!important;height:auto!important}.panel{overflow:visible!important;border:none!important}.fi-info,.fdel{display:none!important}.fi{break-inside:avoid}}
 
 </style>
 </head>
@@ -140,6 +180,11 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
 <header>
   <h1>JAG Lab · Formula Tool</h1>
   <span id="mc">248 materials</span>
+  <button class="undo-btn" id="undoBtn" onclick="undo()" disabled title="Undo (Ctrl+Z)">↩</button>
+  <button class="undo-btn" id="redoBtn" onclick="redo()" disabled title="Redo (Ctrl+Y)">↪</button>
+  <button class="tbtn" onclick="openLibrary()">📂 Formulas</button>
+  <button class="tbtn" onclick="showImport()">📥 Import</button>
+  <button class="tbtn" onclick="shareFormula()">🔗 Share</button>
   <button class="tbtn" onclick="toggleTheme()">Theme</button>
   <button class="tbtn" onclick="downloadSelf()" title="Download offline copy">⬇ Download</button>
 </header>
@@ -186,7 +231,10 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
         <button class="btn ba" onclick="analyseFormula()">Analyse</button>
         <button class="btn bo" onclick="normalise()">→ 100%</button>
         <button class="btn bo" onclick="clearFormula()">Clear</button>
-        <button class="btn bo" onclick="exportF()">Export</button>
+        <button class="btn bo" onclick="exportF()">Export TXT</button>
+        <button class="btn bo" onclick="exportCsv()">Export CSV</button>
+        <button class="btn bo" onclick="showPresets()">Presets</button>
+        <button class="btn bo" onclick="window.print()">Print</button>
       </div>
     </div>
   </div>
@@ -601,10 +649,11 @@ function renderPills(){
 
 function renderMats(){
   const q=(document.getElementById('search').value||'').toLowerCase();
+  const synMatch=q?new Set(Object.entries(SYNONYMS).filter(([k])=>k.includes(q)).map(([,v])=>v)):new Set();
   const filtered=DB.filter(m=>{
     if(activeFam&&m.fam!==activeFam)return false;
     if(!q)return true;
-    return m.name.toLowerCase().includes(q)||m.fam.toLowerCase().includes(q)||m.desc.toLowerCase().includes(q);
+    return m.name.toLowerCase().includes(q)||m.fam.toLowerCase().includes(q)||m.desc.toLowerCase().includes(q)||synMatch.has(m.id);
   });
   const noteOrd={top:0,heart:1,base:2};
   filtered.sort((a,b)=>{
@@ -636,18 +685,19 @@ function setFam(fam){activeFam=fam;renderPills();renderMats()}
 // FORMULA
 function addMat(id){
   if(!pOf(id)){
+    pushUndo();
     const m=byId(id);
     if(!m){formula[id]='1';renderFormula();renderMats();return}
     let def=+(m.rMax*.2).toFixed(m.rMax<0.01?5:m.rMax<0.1?4:m.rMax<1?3:2);
     if(m.ifra!==null&&def>m.ifra)def=m.ifra;
     formula[id]=String(def);
   }
-  renderFormula();renderMats();showProfile(id);
+  renderFormula();renderMats();showProfile(id);autoSave();
 }
 
-function removeMat(id){delete formula[id];renderFormula();renderMats()}
+function removeMat(id){pushUndo();delete formula[id];renderFormula();renderMats();autoSave()}
 
-function updatePct(id,v){formula[id]=v;renderFormula()}
+function updatePct(id,v){formula[id]=v;renderFormula();autoSave()}
 
 function renderFormula(){
   const keys=fKeys(),tot=total();
@@ -675,12 +725,15 @@ function renderFormula(){
     const over=m.ifra!==null&&p>m.ifra;
     const near=m.ifra!==null&&!over&&p>m.ifra*.9;
     const pw=calcPW(m,p);
-    const grams=(p/100*batchG).toFixed(2);
+    const dilPct=parseFloat(dilutions[id])||100;
+    const grams=gramsNeeded(id).toFixed(2);
+    const dilLabel=dilPct<100?`<span style="font-size:8px;color:var(--warn);margin-left:2px">${dilPct}%dil</span>`:'';
     return`<div class="fi" style="border-left-color:${famColor(m.fam)}">
       <button class="fi-info" onclick="showProfile('${id}')">ⓘ</button>
       <div class="fin">${m.name}<div class="fif">${m.subFam||m.fam} · ${m.note}</div><div class="fif" style="font-size:9px;opacity:.7">T:${tStr(m.tenacity)} · PW <span style="color:var(--accent)">${pw.toFixed(1)}</span></div></div>
       <span class="fi-role" style="background:${roleColor(m.role)}">${m.role||'?'}</span>
-      <div class="fi-g">${grams}g</div>
+      <div class="fi-g">${grams}g${dilLabel}</div>
+      <input class="dil-in" type="number" min="1" max="100" step="1" value="${dilPct}" onchange="setDilution('${id}',this.value)" title="Stock dilution % (100=neat)">
       <input class="fii" type="number" step="0.001" min="0" max="100" value="${p}"
         onchange="updatePct('${id}',this.value)"
         style="${over?'border-color:var(--danger)':near?'border-color:var(--warn)':''}">
@@ -704,14 +757,17 @@ function renderFormula(){
 
 function normalise(){
   const tot=total();if(!tot)return;
+  pushUndo();
   fKeys().forEach(id=>{formula[id]=(pOf(id)/tot*100).toFixed(3)});
-  renderFormula();
+  renderFormula();autoSave();
 }
 
 function clearFormula(){
   if(!confirm('Clear all materials?'))return;
+  pushUndo();
   Object.keys(formula).forEach(id=>delete formula[id]);
-  renderFormula();renderMats();
+  Object.keys(dilutions).forEach(id=>delete dilutions[id]);
+  renderFormula();renderMats();autoSave();
 }
 
 function exportF(){
@@ -801,6 +857,11 @@ function showProfile(id){
   _gUrl=googleSearchUrl(m);
   body+=`<button class="vl-google" onclick="openGoogle()">🔍 Google Search — TGSC · Pell Wall · Fraterworks · PA</button>`;
   body+=`<div class="vl-tip">${cas?'TGSC uses CAS# for exact match. ':''}Click ↗ to open or 📋 to copy URL. In the preview, buttons copy URLs to paste in a new tab.</div>`;
+  const subs=getSubstitutions(m);
+  if(subs.length){
+    body+=`<div class="pp-section">Similar Materials (not in formula)</div>`;
+    subs.forEach(s=>{body+=`<div class="sub-item" onclick="closeProfile();addMat('${s.id}')"><div style="width:7px;height:7px;border-radius:50%;background:${famColor(s.fam)};flex-shrink:0"></div><div style="flex:1"><div style="font-size:12px;font-weight:600">${s.name}</div><div style="font-size:10px;color:var(--muted)">${s.fam} · T:${tStr(s.tenacity)}</div></div><span style="font-size:9px;color:var(--accent)">Add →</span></div>`;});
+  }
   document.getElementById('pp-body').innerHTML=body;
   pp.classList.add('open');
 }
@@ -886,7 +947,15 @@ function analyseFormula(){
   keys.forEach(id=>{const m=byId(id);if(!m)return;famMap[m.fam]=(famMap[m.fam]||0)+pOf(id)});
   const famEntries=Object.entries(famMap).sort((a,b)=>b[1]-a[1]);
 
-  let h='';
+  const safety=calcSafety(keys);
+  let safetyH='';
+  if(safety.ratio>0){
+    const cls=safety.ratio>1?'danger':safety.ratio>.9?'warn':'ok';
+    const sc=safety.ratio>1?'var(--danger)':safety.ratio>.9?'var(--warn)':'var(--safe)';
+    const lbl=safety.ratio>1?'IFRA Exceeded':safety.ratio>.9?'Near Limit':'IFRA Safe';
+    safetyH=`<div class="safety-badge ${cls}"><div class="safety-score" style="color:${sc}">${(safety.ratio*100).toFixed(0)}%</div><div><div style="font-weight:700;font-size:11px">${lbl}</div><div style="font-size:10px;color:var(--muted)">Max IFRA ratio${safety.name?' · '+safety.name:''}</div></div></div>`;
+  }
+  let h=safetyH;
   if(accords.length)h+=`<div class="as"><h3>Detected Accords</h3><div class="atags">${accords.map(a=>`<div class="atag">${a}</div>`).join('')}</div></div>`;
 
   h+=`<div class="as"><h3>Checks & Warnings (${warnings.length})</h3>`;
@@ -946,12 +1015,314 @@ function analyseFormula(){
     </div>`;
   });
   h+='</div>';
+  h+=renderDrydown(keys);
+  h+=renderRadar(keys);
   document.getElementById('ac').innerHTML=h;
 }
 
+// ==== SYNONYMS ====
+const SYNONYMS={'leaf alcohol':'cis3_hexenol','cis-3-hexenol':'cis3_hexenol','hexenol':'cis3_hexenol','green leaf':'cis3_hexenol','dhm':'dihydro_myrcenol','dihydromyrcenol':'dihydro_myrcenol','iso e':'iso_e_super','isoe':'iso_e_super','iso e super':'iso_e_super','ambrox':'ambroxan','ambroxide':'ambroxan','piperonal':'heliotropin','heliotropin':'heliotropin','benzyl sal':'benzyl_sal','benzyl salicylate':'benzyl_sal','amyl sal':'amyl_sal','amyl salicylate':'amyl_sal','ethylene brassylate':'ethylene_brassylate','musk t':'musk_t','iso eugenol':'isoeugenol','phenyl ethanol':'phenyl_ethanol','phenyl ethyl alcohol':'phenyl_ethanol','2-phenylethanol':'phenyl_ethanol','exaltolide':'habanolide','galaxolide 50':'galaxolide','tonka':'tonka_abs','oakmoss':'oakmoss_abs','bergamot':'bergamot_fcr','mandarin red':'mandarin','blood orange':'blood_orange'};
+
+// ==== ACCORDS ====
+const ACCORDS=[
+  {em:'🌅',name:'Amber Base',desc:'Warm resinous amber drydown',mats:['benzyl_sal','vanillin','tonka_abs','labdanum_abs','iso_e_super']},
+  {em:'☁️',name:'Musk Cloud',desc:'Soft powdery musk accord',mats:['habanolide','galaxolide','iso_e_super','cashmeran','benzyl_sal']},
+  {em:'🍋',name:'Citrus Burst',desc:'Bright hesperidic opening',mats:['bergamot_fcr','lemon','lime_eo','petitgrain','dihydro_myrcenol']},
+  {em:'🌹',name:'Rose Heart',desc:'Classic rose heart accord',mats:['rose_abs','phenyl_ethanol','geraniol','damascone_beta','iso_e_super']},
+  {em:'🌲',name:'Woody Base',desc:'Dry woody backbone',mats:['iso_e_super','cashmeran','cedarwood_virginian_eo','habanolide','patchouli_eo']},
+  {em:'🌿',name:'Fougère',desc:'Lavender-fern classic structure',mats:['lavender_eo','coumarin','oakmoss_abs','habanolide','benzyl_sal']},
+  {em:'🍂',name:'Chypre Core',desc:'Oakmoss-citrus-patchouli',mats:['oakmoss_abs','patchouli_eo','bergamot_fcr','labdanum_abs','rose_abs']},
+  {em:'🍫',name:'Gourmand Heart',desc:'Sweet dessert accord',mats:['ethyl_vanillin','tonka_abs','benzyl_sal','coumarin','habanolide']},
+  {em:'🔥',name:'Leather-Oriental',desc:'Dark smoky leather base',mats:['iso_e_super','labdanum_abs','patchouli_eo','cinnamon_bark_eo','vanillin']},
+  {em:'🌊',name:'Marine Fresh',desc:'Ozonic aquatic accord',mats:['calone','floralozone','bergamot_fcr','dihydro_myrcenol','cis3_hexenol']},
+];
+
+// ==== STATE EXTENSIONS ====
+const dilutions={};
+const _undoStack=[],_redoStack=[];
+let _autoSaveTimer=null;
+
+// ==== UNDO / REDO ====
+function pushUndo(){
+  _undoStack.push({f:JSON.stringify(formula),d:JSON.stringify(dilutions)});
+  if(_undoStack.length>40)_undoStack.shift();
+  _redoStack.length=0;
+  updateUndoUI();
+}
+function undo(){
+  if(!_undoStack.length)return;
+  _redoStack.push({f:JSON.stringify(formula),d:JSON.stringify(dilutions)});
+  const s=_undoStack.pop();
+  const f=JSON.parse(s.f),d=JSON.parse(s.d);
+  Object.keys(formula).forEach(k=>delete formula[k]);Object.assign(formula,f);
+  Object.keys(dilutions).forEach(k=>delete dilutions[k]);Object.assign(dilutions,d);
+  renderFormula();renderMats();updateUndoUI();autoSave();
+}
+function redo(){
+  if(!_redoStack.length)return;
+  _undoStack.push({f:JSON.stringify(formula),d:JSON.stringify(dilutions)});
+  const s=_redoStack.pop();
+  const f=JSON.parse(s.f),d=JSON.parse(s.d);
+  Object.keys(formula).forEach(k=>delete formula[k]);Object.assign(formula,f);
+  Object.keys(dilutions).forEach(k=>delete dilutions[k]);Object.assign(dilutions,d);
+  renderFormula();renderMats();updateUndoUI();autoSave();
+}
+function updateUndoUI(){
+  const u=document.getElementById('undoBtn'),r=document.getElementById('redoBtn');
+  if(u)u.disabled=!_undoStack.length;if(r)r.disabled=!_redoStack.length;
+}
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key==='z'){e.preventDefault();undo();}
+  if((e.ctrlKey||e.metaKey)&&(e.key==='y'||(e.shiftKey&&e.key==='z'))){e.preventDefault();redo();}
+});
+
+// ==== AUTO-SAVE ====
+function autoSave(){
+  clearTimeout(_autoSaveTimer);
+  _autoSaveTimer=setTimeout(()=>{
+    try{localStorage.setItem('jaglab_current',JSON.stringify({f:formula,d:dilutions,name:document.getElementById('fname')?.value||''}));}catch(e){}
+  },600);
+}
+function loadCurrent(){
+  try{
+    const s=localStorage.getItem('jaglab_current');if(!s)return;
+    const d=JSON.parse(s);
+    if(d.f&&Object.keys(d.f).length){Object.assign(formula,d.f);}
+    if(d.d)Object.assign(dilutions,d.d);
+    if(d.name){const fn=document.getElementById('fname');if(fn)fn.value=d.name;}
+  }catch(e){}
+}
+
+// ==== FORMULA LIBRARY ====
+function getSavedFormulas(){try{return JSON.parse(localStorage.getItem('jaglab_saved')||'[]');}catch(e){return[];}}
+function setSavedFormulas(arr){try{localStorage.setItem('jaglab_saved',JSON.stringify(arr));}catch(e){}}
+function openLibrary(){
+  const el=document.getElementById('saveName');
+  if(el)el.value=document.getElementById('fname')?.value||'';
+  renderLibList();openModal('libModal');
+}
+function renderLibList(){
+  const saved=getSavedFormulas(),el=document.getElementById('libList');if(!el)return;
+  if(!saved.length){el.innerHTML='<div class="es" style="padding:16px">No saved formulas yet.</div>';return;}
+  el.innerHTML=saved.map((s,i)=>`<div class="lib-item"><div style="flex:1"><div class="lib-item-name">${s.name||'Untitled'}</div><div class="lib-item-meta">${s.mats} materials · ${s.date}</div></div><button class="lib-btn" onclick="loadSavedFormula(${i})">Load</button><button class="lib-btn" style="color:var(--danger);border-color:var(--danger)" onclick="deleteSavedFormula(${i})">Del</button></div>`).join('');
+}
+function doSave(){
+  const name=(document.getElementById('saveName')?.value||'').trim()||document.getElementById('fname')?.value||'Untitled';
+  const saved=getSavedFormulas();
+  saved.unshift({name,mats:fKeys().length,date:new Date().toLocaleDateString(),f:JSON.stringify(formula),d:JSON.stringify(dilutions)});
+  if(saved.length>20)saved.pop();
+  setSavedFormulas(saved);renderLibList();
+  alert(`✓ Saved "${name}"`);
+}
+function loadSavedFormula(i){
+  const s=getSavedFormulas()[i];if(!s)return;
+  pushUndo();
+  Object.keys(formula).forEach(k=>delete formula[k]);Object.assign(formula,JSON.parse(s.f||'{}'));
+  Object.keys(dilutions).forEach(k=>delete dilutions[k]);if(s.d)Object.assign(dilutions,JSON.parse(s.d));
+  const fn=document.getElementById('fname');if(fn)fn.value=s.name||'';
+  renderFormula();renderMats();closeModal('libModal');
+}
+function deleteSavedFormula(i){
+  const saved=getSavedFormulas();saved.splice(i,1);setSavedFormulas(saved);renderLibList();
+}
+function newFormula(){
+  if(fKeys().length&&!confirm('Clear current formula and start new?'))return;
+  pushUndo();
+  Object.keys(formula).forEach(k=>delete formula[k]);Object.keys(dilutions).forEach(k=>delete dilutions[k]);
+  const fn=document.getElementById('fname');if(fn)fn.value='Untitled';
+  renderFormula();renderMats();closeModal('libModal');
+}
+
+// ==== SHARE / URL ====
+function shareFormula(){
+  const data={f:formula,n:document.getElementById('fname')?.value||''};
+  const enc=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  const url=location.href.replace(/#.*/,'')+`#f=${enc}`;
+  const inIframe=window!==window.top;
+  if(inIframe){
+    navigator.clipboard.writeText(url).then(()=>alert('✓ Formula URL copied!\n\nPaste in a browser to share this formula.')).catch(()=>prompt('Copy this formula URL:',url));
+  }else{
+    navigator.clipboard.writeText(url).then(()=>alert('✓ Formula URL copied!\n\nAnyone with this link can open the same formula.')).catch(()=>prompt('Copy this formula URL:',url));
+  }
+}
+function loadFromUrl(){
+  try{
+    const hash=location.hash;if(!hash.includes('#f='))return false;
+    const enc=hash.replace(/^.*#f=/,'');
+    const data=JSON.parse(decodeURIComponent(escape(atob(enc))));
+    if(data.f&&Object.keys(data.f).length){Object.assign(formula,data.f);}
+    if(data.n){const fn=document.getElementById('fname');if(fn)fn.value=data.n;}
+    return true;
+  }catch(e){return false;}
+}
+
+// ==== IMPORT ====
+function showImport(){openModal('importModal');document.getElementById('importResult').innerHTML='';document.getElementById('importTa').value='';}
+function runImport(){
+  const text=document.getElementById('importTa').value;
+  const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+  const matched=[],unmatched=[];
+  lines.forEach(line=>{
+    const m=line.match(/^(.+?)[\s:,]+(\d+\.?\d*)%?\s*$/);
+    if(!m){unmatched.push(line);return;}
+    const name=m[1].trim(),pct=parseFloat(m[2]);
+    const found=findMat(name);
+    if(found)matched.push({id:found.id,name:found.name,pct});
+    else unmatched.push(line);
+  });
+  const res=document.getElementById('importResult');
+  let h=matched.map(x=>`<div class="import-matched">✓ ${x.name} → ${x.pct}%</div>`).join('');
+  h+=unmatched.map(x=>`<div class="import-unmatched">✗ No match: ${x}</div>`).join('');
+  if(matched.length){
+    h=`<button class="btn ba" style="margin-bottom:6px" onclick="applyImport(${JSON.stringify(matched).replace(/"/g,'&quot;')})">Apply ${matched.length} matched material${matched.length===1?'':'s'}</button>`+h;
+  }
+  res.innerHTML=h;
+}
+function findMat(name){
+  const q=name.toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+  const synId=SYNONYMS[q];if(synId){const m=byId(synId);if(m)return m;}
+  const exact=DB.find(m=>m.name.toLowerCase()===q||m.name.toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim()===q);
+  if(exact)return exact;
+  const partial=DB.find(m=>m.name.toLowerCase().includes(q)||q.includes(m.name.toLowerCase().replace(/\s*(eo|abs|resinoid)$/i,'').trim()));
+  return partial||null;
+}
+function applyImport(matched){
+  if(typeof matched==='string')matched=JSON.parse(matched);
+  pushUndo();matched.forEach(x=>{formula[x.id]=String(x.pct);});
+  renderFormula();renderMats();closeModal('importModal');
+}
+
+// ==== PRESETS ====
+function showPresets(){
+  document.getElementById('presetsGrid').innerHTML=ACCORDS.map((a,i)=>`<div class="preset-card" onclick="applyAccord(${i})"><div class="preset-em">${a.em}</div><div class="preset-name">${a.name}</div><div class="preset-desc">${a.desc}</div></div>`).join('');
+  openModal('presetsModal');
+}
+function applyAccord(i){
+  const acc=ACCORDS[i];if(!acc)return;
+  pushUndo();
+  acc.mats.forEach(id=>{
+    const m=byId(id);if(!m)return;
+    if(!pOf(id)){let def=+(m.rMax*.2).toFixed(m.rMax<0.01?5:m.rMax<0.1?4:m.rMax<1?3:2);if(m.ifra!==null&&def>m.ifra)def=m.ifra;formula[id]=String(def);}
+  });
+  renderFormula();renderMats();closeModal('presetsModal');
+}
+
+// ==== MODAL HELPERS ====
+function openModal(id){const el=document.getElementById(id);if(el)el.classList.add('open');}
+function closeModal(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
+
+// ==== DILUTION ====
+function setDilution(id,val){pushUndo();dilutions[id]=val;renderFormula();autoSave();}
+function gramsNeeded(id){
+  const p=pOf(id),dil=Math.max(parseFloat(dilutions[id])||100,0.01);
+  return(p/100*batchG)/(dil/100);
+}
+
+// ==== SUBSTITUTIONS ====
+function getSubstitutions(m){
+  const inF=new Set(fKeys());
+  return DB.filter(s=>{
+    if(s.id===m.id||inF.has(s.id))return false;
+    if(s.fam!==m.fam)return false;
+    if(m.tenacity===null||s.tenacity===null)return true;
+    const ratio=s.tenacity/m.tenacity;return ratio>=0.33&&ratio<=3;
+  }).slice(0,3);
+}
+
+// ==== SAFETY SCORE ====
+function calcSafety(keys){
+  let worst=0,worstName='';
+  keys.forEach(id=>{const m=byId(id);if(!m||m.ifra===null)return;const r=pOf(id)/m.ifra;if(r>worst){worst=r;worstName=m.name;}});
+  return{ratio:worst,name:worstName};
+}
+
+// ==== DRYDOWN TIMELINE ====
+function renderDrydown(keys){
+  const withT=keys.filter(id=>{const m=byId(id);return m&&m.tenacity!=null;}).sort((a,b)=>{return(byId(b).tenacity||0)-(byId(a).tenacity||0);});
+  if(!withT.length)return'';
+  const maxT=withT.reduce((mx,id)=>Math.max(mx,byId(id).tenacity||0),1);
+  const rows=withT.map(id=>{
+    const m=byId(id),w=(m.tenacity/maxT*100).toFixed(0);
+    const c=m.note==='top'?'#5C9BD6':m.note==='heart'?'#D65C9B':'#C9A96E';
+    return`<div class="drydown-row"><div class="drydown-name" title="${m.name}">${m.name}</div><div class="drydown-bar"><div class="drydown-fill" style="width:${w}%;background:${c}"></div></div><div style="width:32px;text-align:right;color:var(--muted);font-size:10px">${m.tenacity}h</div></div>`;
+  });
+  return`<div class="as"><h3>Drydown Timeline</h3><div style="font-size:9px;color:var(--muted);margin-bottom:5px">Bar = relative tenacity &nbsp;·&nbsp; <span style="color:#5C9BD6">■</span> top &nbsp;<span style="color:#D65C9B">■</span> heart &nbsp;<span style="color:#C9A96E">■</span> base</div>${rows.join('')}</div>`;
+}
+
+// ==== ODOR WHEEL RADAR ====
+function renderRadar(keys){
+  const famGroups=['Citrus','Florals+Muguet','Jasmine+Hedione','Iris+Ionones','Musks','Woods','Patchouli+Vetiver','Gourmand','Lav+Aromatic'];
+  const tot=total();if(!tot||keys.length<2)return'';
+  const scores=famGroups.map(f=>Math.min(famPct(f)/tot,1));
+  if(scores.every(s=>s===0))return'';
+  const sz=180,cx=sz/2,cy=sz/2,r=sz/2-22;
+  function pt(i,v){const a=(i/famGroups.length)*Math.PI*2-Math.PI/2;return{x:cx+Math.cos(a)*r*v,y:cy+Math.sin(a)*r*v};}
+  let svg=`<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">`;
+  [.25,.5,.75,1].forEach(v=>{
+    const rp=famGroups.map((_,i)=>pt(i,v));
+    svg+=`<polygon points="${rp.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}" fill="none" stroke="var(--border)" stroke-width="0.5"/>`;
+  });
+  famGroups.forEach((_,i)=>{const p=pt(i,1);svg+=`<line x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="var(--border)" stroke-width="0.5"/>`;});
+  const dp=scores.map((v,i)=>pt(i,Math.max(v,.02)));
+  svg+=`<polygon points="${dp.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}" fill="var(--accent)" fill-opacity="0.2" stroke="var(--accent)" stroke-width="1.5"/>`;
+  famGroups.forEach((f,i)=>{
+    const lp=pt(i,1.22);
+    const short=f.split('+')[0].replace('Patchouli','Patch.').replace('Aldehydes','Ald.').replace('Lav','Lav.');
+    svg+=`<text x="${lp.x.toFixed(1)}" y="${lp.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="7" fill="var(--muted)">${short}</text>`;
+  });
+  svg+='</svg>';
+  return`<div class="as"><h3>Odor Profile Radar</h3><div style="display:flex;justify-content:center">${svg}</div></div>`;
+}
+
+// ==== CSV EXPORT ====
+function exportCsv(){
+  const name=document.getElementById('fname').value||'Formula';
+  const sorted=fKeys().sort((a,b)=>pOf(b)-pOf(a));
+  const rows=[['Material','Family','Note','%','Dilution%','Grams (of stock)','Role','Tenacity(h)','Impact','IFRA Cat4 max%','PW']];
+  sorted.forEach(id=>{
+    const m=byId(id);if(!m)return;
+    const p=pOf(id),dil=parseFloat(dilutions[id])||100,g=gramsNeeded(id).toFixed(3);
+    rows.push([m.name,m.fam,m.note,p.toFixed(3),dil,g,m.role||'',m.tenacity!=null?m.tenacity:'',m.impact!=null?m.impact:'',m.ifra!=null?m.ifra:'',calcPW(m,p).toFixed(1)]);
+  });
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const b=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name.replace(/\s+/g,'_')+'.csv';a.click();
+}
+
+if(!loadFromUrl())loadCurrent();
 renderPills();renderMats();renderFormula();
 </script>
 <div id="pp" onclick="if(event.target===this)closeProfile()"><div class="pp-card"><div class="pp-head"><div class="pp-name" id="pp-name"></div><button class="pp-close" onclick="closeProfile()">×</button></div><div id="pp-body"></div></div></div>
+<div class="modal-overlay" id="libModal" onclick="if(event.target===this)closeModal('libModal')">
+  <div class="modal-card">
+    <div class="modal-head"><div class="modal-title">📂 Saved Formulas</div><button class="modal-close" onclick="closeModal('libModal')">×</button></div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+      <input type="text" id="saveName" placeholder="Formula name…" class="sb" style="margin:0;flex:1;min-width:140px">
+      <button class="btn ba" onclick="doSave()">Save Current</button>
+      <button class="btn bo" onclick="newFormula()">New</button>
+    </div>
+    <div id="libList"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="importModal" onclick="if(event.target===this)closeModal('importModal')">
+  <div class="modal-card">
+    <div class="modal-head"><div class="modal-title">📥 Import Formula Text</div><button class="modal-close" onclick="closeModal('importModal')">×</button></div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Paste lines like <code style="background:var(--card);padding:1px 4px;border-radius:2px">Bergamot FCF: 5%</code> or <code style="background:var(--card);padding:1px 4px;border-radius:2px">Iso E Super 3.5</code></div>
+    <textarea class="import-ta" id="importTa" placeholder="Bergamot FCF: 5%&#10;Iso E Super: 3.5&#10;Habanolide 2%&#10;Patchouli EO: 1.5"></textarea>
+    <div style="display:flex;gap:6px">
+      <button class="btn ba" onclick="runImport()">Match Materials</button>
+      <button class="btn bo" onclick="closeModal('importModal')">Cancel</button>
+    </div>
+    <div class="import-result" id="importResult"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="presetsModal" onclick="if(event.target===this)closeModal('presetsModal')">
+  <div class="modal-card">
+    <div class="modal-head"><div class="modal-title">🎵 Accord Presets</div><button class="modal-close" onclick="closeModal('presetsModal')">×</button></div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Click to add accord materials to the current formula at suggested starting percentages.</div>
+    <div class="presets-grid" id="presetsGrid"></div>
+  </div>
+</div>
 <script>
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});

@@ -16,87 +16,102 @@
 :root[data-theme="dark"]{--bg:#0F0E0D;--surface:#1B1916;--card:#242220;--border:#2E2B28;--text:#EDE8E1;--muted:#857E76;--accent:#C9A96E;--accent-dim:#7A5C2E;--warn:#E08030;--danger:#D04040;--safe:#5FAF65;--pill:#252220}
 :root[data-theme="light"]{--bg:#F4F0EA;--surface:#FFFFFF;--card:#EDE8DF;--border:#D5CEC4;--text:#1C1814;--muted:#7A7068;--accent:#8B5C1A;--accent-dim:#C49040;--warn:#B85A00;--danger:#B02020;--safe:#3A8040;--pill:#E8E2D8}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Georgia,serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
-header h1{font-size:15px;font-weight:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);flex:1}
-header span{font-size:11px;color:var(--muted);font-family:monospace}
-.tbtn{background:none;border:1px solid var(--border);color:var(--muted);padding:3px 10px;cursor:pointer;border-radius:3px;font-size:11px;letter-spacing:.05em}
+body{font-family:'Georgia',serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.55}
+/* ── HEADER ── */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 18px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;height:48px}
+header h1{font-size:13px;font-weight:normal;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);flex:0 0 auto;white-space:nowrap}
+header h1 em{font-style:normal;opacity:.5;font-size:11px;letter-spacing:.08em;margin:0 4px}
+.hdr-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+.hdr-count{font-size:10px;color:var(--muted);font-family:monospace;letter-spacing:.04em;flex:1}
+.tbtn{background:none;border:1px solid var(--border);color:var(--muted);padding:4px 11px;cursor:pointer;border-radius:20px;font-size:10px;letter-spacing:.06em;transition:all .12s;white-space:nowrap}
 .tbtn:hover{color:var(--text);border-color:var(--muted)}
-.app{display:grid;grid-template-columns:300px 1fr 260px;height:calc(100vh - 45px)}
+/* ── 3-COLUMN LAYOUT ── */
+.app{display:grid;grid-template-columns:290px 1fr 270px;height:calc(100vh - 48px)}
 @media(max-width:860px){.app{grid-template-columns:1fr;height:auto}}
 .panel{border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
 .panel:last-child{border-right:none}
 .ph{padding:10px 12px 8px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
-.ph h2{font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:7px}
-.pi{padding:8px;flex:1}
-.sb{width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 9px;font-size:12px;border-radius:3px;outline:none;margin-bottom:6px}
+.ph h2{font-size:8px;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-bottom:7px}
+.pi{padding:10px 10px 16px;flex:1}
+/* ── SEARCH & FILTER PILLS ── */
+.sb{width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);padding:7px 10px;font-size:12px;border-radius:4px;outline:none;margin-bottom:7px;font-family:inherit}
 .sb:focus{border-color:var(--accent-dim)}
 .sb::placeholder{color:var(--muted)}
 .fps{display:flex;gap:4px;flex-wrap:wrap}
-.fp{padding:3px 8px;border-radius:20px;font-size:9px;letter-spacing:.04em;cursor:pointer;border:1px solid transparent;background:var(--pill);color:var(--muted);transition:all .12s;white-space:nowrap}
+.fp{padding:3px 9px;border-radius:20px;font-size:9px;letter-spacing:.04em;cursor:pointer;border:1px solid transparent;background:var(--pill);color:var(--muted);transition:all .12s;white-space:nowrap}
 .fp:hover{color:var(--text)}
 .fp.act{color:#0F0E0D!important}
-.ml{display:flex;flex-direction:column;gap:2px}
-.mi{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:4px;cursor:pointer;border:1px solid transparent;transition:background .1s}
-.mi:hover{background:var(--card)}
+/* ── MATERIAL LIST ITEMS ── */
+.ml{display:flex;flex-direction:column;gap:1px}
+.mi{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:4px;cursor:pointer;border:1px solid transparent;transition:background .1s,border-color .1s;user-select:none}
+.mi:hover{background:var(--card);border-color:var(--border)}
+.mi:active{opacity:.7}
 .mi.inf{background:var(--card);border-color:var(--border)}
-.md{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.mn{font-size:13px;font-weight:600}
-.mf{font-size:10px;color:var(--muted)}
-.mnote{font-size:9px;text-transform:uppercase;color:var(--muted);width:14px;text-align:right}
+.md{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.mn{font-size:13px;font-weight:600;line-height:1.2}
+.mf{font-size:10px;color:var(--muted);margin-top:1px}
+.mnote{font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--pill);border:1px solid var(--border);border-radius:3px;padding:1px 4px;width:18px;text-align:center;flex-shrink:0}
+/* ── FORMULA PANEL HEADER ── */
 .ftitle{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.ftitle input{flex:1;background:none;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:14px;padding:2px 0;outline:none}
+.ftitle input{flex:1;background:none;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:15px;font-family:inherit;padding:3px 0;outline:none;font-weight:600}
 .ftitle input:focus{border-bottom-color:var(--accent-dim)}
-.tbar{display:flex;align-items:center;gap:6px;padding:7px 9px;background:var(--card);border-radius:3px;margin-bottom:6px;font-size:11px}
-.tv{font-variant-numeric:tabular-nums;font-size:18px;font-weight:bold;color:var(--accent)}
-.tl{color:var(--muted);flex:1}
-.bt{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:2px}
-.bf{height:100%;border-radius:2px;transition:width .2s,background .2s}
-.pyr{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px}
-.pc{background:var(--card);border-radius:3px;padding:6px 8px;text-align:center}
-.pc .pl{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:block}
-.pc .pv{font-size:16px;font-variant-numeric:tabular-nums;display:block}
-.pc .pp{font-size:9px;color:var(--muted)}
-.fi-list{display:flex;flex-direction:column;gap:4px}
-.fi{display:flex;align-items:center;gap:5px;padding:8px 9px;background:var(--card);border-radius:4px;border-left:3px solid transparent}
-.fin{flex:1;font-size:13px;font-weight:600}
-.fif{font-size:10px;color:var(--muted)}
-.fip{font-variant-numeric:tabular-nums;font-size:13px;color:var(--accent);width:40px;text-align:right}
-.fii{width:62px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:3px 6px;font-size:13px;border-radius:3px;text-align:right;outline:none;font-variant-numeric:tabular-nums}
+.tbar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--card);border-radius:4px;margin-bottom:5px;font-size:11px;border:1px solid var(--border)}
+.tv{font-variant-numeric:tabular-nums;font-size:20px;font-weight:700;color:var(--accent);letter-spacing:-.01em}
+.tl{color:var(--muted);flex:1;font-size:10px;letter-spacing:.04em;text-transform:uppercase}
+.bt{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:2px}
+.bf{height:100%;border-radius:2px;transition:width .25s,background .25s}
+/* ── FORMULA PYRAMID ── */
+.pyr{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:7px 8px;text-align:center}
+.pc .pl{font-size:7px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);display:block;margin-bottom:2px}
+.pc .pv{font-size:17px;font-variant-numeric:tabular-nums;display:block;font-weight:700;color:var(--text)}
+.pc .pp{font-size:9px;color:var(--muted);font-variant-numeric:tabular-nums}
+/* ── FORMULA INGREDIENT ROWS ── */
+.fi-list{display:flex;flex-direction:column;gap:3px}
+.fi{display:grid;grid-template-columns:20px 1fr auto auto auto 22px;align-items:center;gap:6px;padding:9px 10px;background:var(--card);border-radius:4px;border-left:3px solid transparent;border:1px solid var(--border);transition:border-color .1s,background .1s}
+.fi:hover{border-color:var(--muted);background:var(--surface)}
+.fin{font-size:12px;font-weight:700;line-height:1.2;min-width:0}
+.fif{font-size:10px;color:var(--muted);line-height:1.3}
+.fip{font-variant-numeric:tabular-nums;font-size:12px;color:var(--accent);text-align:right;white-space:nowrap;font-weight:600}
+.fii{width:64px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:4px 6px;font-size:12px;border-radius:3px;text-align:right;outline:none;font-variant-numeric:tabular-nums;font-family:inherit}
 .fii:focus{border-color:var(--accent-dim)}
-.fdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 4px;border-radius:2px;line-height:1}
-.fdel:hover{color:var(--danger)}
-.ar{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
-.btn{padding:6px 12px;border-radius:3px;font-size:11px;cursor:pointer;letter-spacing:.05em;border:none;transition:opacity .15s}
+.fdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:2px;border-radius:2px;line-height:1;opacity:.5}
+.fdel:hover{color:var(--danger);opacity:1}
+/* ── ACTION BAR ── */
+.ar{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--border)}
+.btn{padding:6px 13px;border-radius:20px;font-size:10px;cursor:pointer;letter-spacing:.06em;border:none;transition:opacity .15s;font-family:inherit}
 .btn:hover{opacity:.82}
-.ba{background:var(--accent);color:#0F0E0D}
+.ba{background:var(--accent);color:#0F0E0D;font-weight:600}
 .bo{background:none;border:1px solid var(--border);color:var(--text)}
-.es{text-align:center;color:var(--muted);padding:32px 16px;font-size:12px}
-.as{margin-bottom:10px}
-.as h3{font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid var(--border)}
-.atags{display:flex;flex-wrap:wrap;gap:3px}
-.atag{padding:2px 9px;border-radius:20px;font-size:10px;background:var(--accent-dim);color:var(--bg)}
-.wi{padding:7px 9px;border-radius:3px;font-size:11px;margin-bottom:4px;border-left:3px solid;line-height:1.4}
-.wi.danger{background:rgba(208,64,64,.1);border-color:var(--danger)}
-.wi.warn{background:rgba(224,128,48,.1);border-color:var(--warn)}
-.wi.ok{background:rgba(95,175,101,.1);border-color:var(--safe)}
-.wi strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
-.fb{display:flex;flex-direction:column;gap:3px}
-.fr{display:flex;align-items:center;gap:5px;font-size:10px}
-.frn{width:110px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.frt{flex:1;height:5px;background:var(--border);border-radius:2px;overflow:hidden}
-.frf{height:100%;border-radius:2px}
-.frp{width:30px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
-.fi-info{background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:0 3px;border-radius:2px;line-height:1;flex-shrink:0}
-.fi-info:hover{color:var(--accent)}
-.fi-role{font-size:8px;text-transform:uppercase;letter-spacing:.05em;padding:1px 5px;border-radius:10px;flex-shrink:0;font-weight:700;white-space:nowrap;color:rgba(255,255,255,.9)}
-.fi-g{font-size:10px;color:var(--muted);width:38px;text-align:right;font-variant-numeric:tabular-nums;flex-shrink:0}
-.gi-bar{display:flex;gap:6px;align-items:center;padding:5px 8px;background:var(--card);border-radius:3px;margin-bottom:6px;font-size:10px;flex-wrap:wrap}
-.gi-bar select,.gi-bar input[type=number]{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:2px 5px;font-size:10px;border-radius:3px;outline:none;max-width:68px}
+/* ── ANALYSIS PANEL ── */
+.es{text-align:center;color:var(--muted);padding:40px 20px;font-size:12px;line-height:1.7}
+.as{margin-bottom:12px}
+.as h3{font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.atags{display:flex;flex-wrap:wrap;gap:4px}
+.atag{padding:3px 10px;border-radius:20px;font-size:10px;background:var(--accent-dim);color:var(--bg);font-weight:600;letter-spacing:.04em}
+.wi{padding:8px 10px;border-radius:4px;font-size:11px;margin-bottom:5px;border-left:3px solid;line-height:1.5}
+.wi.danger{background:rgba(208,64,64,.09);border-color:var(--danger)}
+.wi.warn{background:rgba(224,128,48,.09);border-color:var(--warn)}
+.wi.ok{background:rgba(95,175,101,.09);border-color:var(--safe)}
+.wi strong{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;font-weight:700}
+.fb{display:flex;flex-direction:column;gap:4px}
+.fr{display:flex;align-items:center;gap:6px;font-size:10px}
+.frn{width:115px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frt{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.frf{height:100%;border-radius:3px}
+.frp{width:32px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);font-size:10px}
+/* ── MATERIAL INFO BUTTON & ROLE CHIP ── */
+.fi-info{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;padding:0 2px;border-radius:2px;line-height:1;flex-shrink:0;opacity:.6}
+.fi-info:hover{color:var(--accent);opacity:1}
+.fi-role{font-size:7px;text-transform:uppercase;letter-spacing:.07em;padding:2px 6px;border-radius:10px;flex-shrink:0;font-weight:700;white-space:nowrap;color:rgba(255,255,255,.9)}
+.fi-g{font-size:10px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums;flex-shrink:0;white-space:nowrap}
+/* ── GLOBAL INPUTS BAR ── */
+.gi-bar{display:flex;gap:6px;align-items:center;padding:6px 9px;background:var(--card);border:1px solid var(--border);border-radius:4px;margin-bottom:7px;font-size:10px;flex-wrap:wrap}
+.gi-bar select,.gi-bar input[type=number]{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:3px 6px;font-size:10px;border-radius:3px;outline:none;max-width:72px;font-family:inherit}
 .gi-bar select:focus,.gi-bar input:focus{border-color:var(--accent-dim)}
-.gi-bar label{color:var(--muted);white-space:nowrap}
+.gi-bar label{color:var(--muted);white-space:nowrap;font-size:9px;letter-spacing:.04em;text-transform:uppercase}
 .gi-sep{color:var(--border);margin:0 2px}
-.ph-tgl{background:none;border:1px solid var(--border);color:var(--muted);padding:2px 7px;border-radius:3px;font-size:9px;cursor:pointer;letter-spacing:.04em}
+.ph-tgl{background:none;border:1px solid var(--border);color:var(--muted);padding:3px 9px;border-radius:20px;font-size:9px;cursor:pointer;letter-spacing:.06em;transition:all .12s}
 .ph-tgl.act{background:var(--accent-dim);color:var(--bg);border-color:transparent}
 .fi-phase-hdr{font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:8px 8px 3px;border-bottom:1px solid var(--border);margin-bottom:3px}
 #pp{position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px;visibility:hidden;opacity:0;transition:opacity .2s,visibility .2s}
@@ -188,15 +203,17 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
 </head>
 <body>
 <header>
-  <h1>JAG Lab · Formula Tool</h1>
-  <span id="mc">248 materials</span>
+  <h1>JAG Lab<em>·</em>Perfumery</h1>
+  <div class="hdr-sep"></div>
+  <span class="hdr-count" id="mc">248 materials</span>
   <button class="undo-btn" id="undoBtn" onclick="undo()" disabled title="Undo (Ctrl+Z)">↩</button>
   <button class="undo-btn" id="redoBtn" onclick="redo()" disabled title="Redo (Ctrl+Y)">↪</button>
-  <button class="tbtn" onclick="openLibrary()">📂 Formulas</button>
-  <button class="tbtn" onclick="showImport()">📥 Import</button>
-  <button class="tbtn" onclick="shareFormula()">🔗 Share</button>
+  <div class="hdr-sep"></div>
+  <button class="tbtn" onclick="openLibrary()">Formulas</button>
+  <button class="tbtn" onclick="showImport()">Import</button>
+  <button class="tbtn" onclick="shareFormula()">Share</button>
   <button class="tbtn" onclick="toggleTheme()">Theme</button>
-  <button class="tbtn" onclick="downloadSelf()" title="Download offline copy">⬇ Download</button>
+  <button class="tbtn" onclick="downloadSelf()" title="Download offline copy">Download</button>
 </header>
 <div class="app">
   <div class="panel">
@@ -250,7 +267,7 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
   </div>
   <div class="panel">
     <div class="ph"><h2>Analysis</h2></div>
-    <div class="pi" id="ac"><div class="es">Build a formula and click Analyse</div></div>
+    <div class="pi" id="ac"><div class="es">Build a formula,<br>then click <b>Analyse</b><br><span style="font-size:10px;opacity:.6;display:block;margin-top:6px">Accords · Warnings · Family breakdown<br>Perceptual weight · Longevity · Radar</span></div></div>
   </div>
 </div>
 <script>
@@ -675,19 +692,21 @@ function renderMats(){
   });
   const list=document.getElementById('ml');
   if(!filtered.length){list.innerHTML='<div class="es">No materials found</div>';return}
+  const noteColor={top:'var(--accent)',heart:'var(--safe)',base:'var(--muted)'};
   list.innerHTML=filtered.map(m=>{
     const inf=pOf(m.id)>0;
+    const nc=noteColor[m.note]||'var(--muted)';
     return`<div class="mi${inf?' inf':''}" onclick="addMat('${m.id}')">
       <div class="md" style="background:${famColor(m.fam)}"></div>
       <div style="flex:1;min-width:0">
         <div class="mn">${m.name}</div>
         <div class="mf">${m.subFam||m.fam}</div>
       </div>
-      <div class="mnote">${m.note[0].toUpperCase()}</div>
+      <div class="mnote" style="color:${nc};border-color:${nc};opacity:.8">${m.note[0].toUpperCase()}</div>
       <button class="fi-info" onclick="event.stopPropagation();showProfile('${m.id}')" title="Full profile">ⓘ</button>
     </div>`;
   }).join('');
-  document.getElementById('mc').textContent=`${filtered.length}/${DB.length}`;
+  document.getElementById('mc').textContent=`${filtered.length} / ${DB.length}`;
 }
 
 function setFam(fam){activeFam=fam;renderPills();renderMats()}
@@ -702,7 +721,7 @@ function addMat(id){
     if(m.ifra!==null&&def>m.ifra)def=m.ifra;
     formula[id]=String(def);
   }
-  renderFormula();renderMats();showProfile(id);autoSave();
+  renderFormula();renderMats();autoSave();
 }
 
 function removeMat(id){pushUndo();delete formula[id];renderFormula();renderMats();autoSave()}
@@ -738,16 +757,16 @@ function renderFormula(){
     const dilPct=parseFloat(dilutions[id])||100;
     const grams=gramsNeeded(id).toFixed(2);
     const dilLabel=dilPct<100?`<span style="font-size:8px;color:var(--warn);margin-left:2px">${dilPct}%dil</span>`:'';
+    const roleChip=m.role?`<span class="fi-role" style="background:${roleColor(m.role)}">${m.role}</span>`:'';
+    const sharePct=tot>0?((p/tot*100).toFixed(0))+'%':'';
     return`<div class="fi" style="border-left-color:${famColor(m.fam)}">
       <button class="fi-info" onclick="showProfile('${id}')">ⓘ</button>
-      <div class="fin">${m.name}<div class="fif">${m.subFam||m.fam} · ${m.note}</div><div class="fif" style="font-size:9px;opacity:.7">T:${tStr(m.tenacity)} · PW <span style="color:var(--accent)">${pw.toFixed(1)}</span></div></div>
-      <span class="fi-role" style="background:${roleColor(m.role)}">${m.role||'?'}</span>
-      <div class="fi-g">${grams}g${dilLabel}</div>
+      <div class="fin">${m.name}${roleChip?` ${roleChip}`:''}<div class="fif">${m.subFam||m.fam} · ${m.note}${dilPct<100?` <span style="color:var(--warn);font-size:9px">${dilPct}%dil</span>`:''}</div><div class="fif" style="font-size:9px;opacity:.55">T:${tStr(m.tenacity)} &nbsp;·&nbsp; PW <b style="color:var(--accent)">${pw.toFixed(1)}</b>${sharePct?` &nbsp;·&nbsp; <span style="color:var(--muted)">${sharePct} of formula</span>`:''}</div></div>
+      <div class="fi-g">${grams}g</div>
       <input class="dil-in" type="number" min="1" max="100" step="1" value="${dilPct}" onchange="setDilution('${id}',this.value)" title="Stock dilution % (100=neat)">
       <input class="fii" type="number" step="0.001" min="0" max="100" value="${p}"
         onchange="updatePct('${id}',this.value)"
-        style="${over?'border-color:var(--danger)':near?'border-color:var(--warn)':''}">
-      <div class="fip" style="${over?'color:var(--danger)':near?'color:var(--warn)':''}">${tot>0?((p/tot*100).toFixed(0)):0}%</div>
+        style="${over?'border-color:var(--danger);color:var(--danger)':near?'border-color:var(--warn)':''}">
       <button class="fdel" onclick="removeMat('${id}')">×</button>
     </div>`;}
   if(!phaseGrouped){
@@ -1084,6 +1103,12 @@ function updateUndoUI(){
 document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key==='z'){e.preventDefault();undo();}
   if((e.ctrlKey||e.metaKey)&&(e.key==='y'||(e.shiftKey&&e.key==='z'))){e.preventDefault();redo();}
+  if(e.key==='Escape'){
+    const open=document.querySelector('.modal-overlay.open');
+    if(open){closeModal(open.id);return;}
+    const pp=document.getElementById('pp');
+    if(pp&&pp.classList.contains('open'))closeProfile();
+  }
 });
 
 // ==== AUTO-SAVE ====
@@ -1169,6 +1194,7 @@ function loadFromUrl(){
 // ==== IMPORT ====
 const CAS_MAP={};
 const IMPORT_ALIASES={
+  // Amber/Musk
   'ambrox dl':'ambrox_super','ambrox super':'ambrox_super','ambrofix':'ambrox_super','ambrox':'ambrox_super',
   'dihydromyrcenol':'dihydro_myrcenol','dhm':'dihydro_myrcenol','dihydro myrcenol':'dihydro_myrcenol',
   'madranol':'javanol','sandalore':'javanol','kovanol':'javanol',
@@ -1176,40 +1202,54 @@ const IMPORT_ALIASES={
   'galaxolide 50':'galaxolide_undil','galaxolide 50 bbl':'galaxolide_undil','galaxolide':'galaxolide_undil',
   'lilial replacer':'florhydral','lilial':'florhydral','bourgeonal':'florhydral',
   'iso e super':'iso_e_super','iso e':'iso_e_super','iso e super 10':'iso_e_super','iso e super givaudan':'iso_e_super',
-  'hedione':'methyl_dihydrojasmonate','hedione hc':'methyl_dihydrojasmonate',
+  // Jasmine/floral
+  'hedione':'hedione','hedione hc':'hedione_hc',
+  // Vetiver
   'vetiver haiti':'vetiver_eo','haitian vetiver':'vetiver_eo','vetiver eo haiti':'vetiver_eo',
+  // Labdanum
   'labdanum absolute':'labdanum_abs','labdanum abs':'labdanum_abs','labdanum resinoid':'labdanum_abs',
+  // Patchouli
   'patchouli heart':'patchouli_eo','patchouli':'patchouli_eo',
-  'bergamot fcf':'bergamot_eo','bergamot':'bergamot_eo',
-  'lemon sicilian':'lemon_eo','lemon eo sicilian':'lemon_eo',
-  'orange sweet':'orange_sweet_eo','sweet orange eo':'orange_sweet_eo',
-  'jasmine sambac abs':'jasmine_abs','jasmine abs':'jasmine_abs','jasmine absolute':'jasmine_abs',
-  'cedarwood virginia':'cedarwood_virginia_eo','cedar virginia eo':'cedarwood_virginia_eo','virginia cedarwood':'cedarwood_virginia_eo',
+  // Bergamot (DB ID: bergamot_fcr)
+  'bergamot fcf':'bergamot_fcr','bergamot':'bergamot_fcr','bergamot eo':'bergamot_fcr','bergamot fcr':'bergamot_fcr',
+  // Lemon (DB ID: lemon)
+  'lemon sicilian':'lemon','lemon eo sicilian':'lemon','lemon eo':'lemon',
+  // Orange (DB ID: sweet_orange)
+  'orange sweet':'sweet_orange','sweet orange eo':'sweet_orange','orange sweet eo':'sweet_orange',
+  // Jasmine (DB ID: jasmine_floraline — closest)
+  'jasmine sambac abs':'jasmine_floraline','jasmine abs':'jasmine_floraline','jasmine absolute':'jasmine_floraline',
+  // Cedar (DB IDs: cedarwood_virginian_eo, cedarwood_atlas)
+  'cedarwood virginia':'cedarwood_virginian_eo','cedar virginia eo':'cedarwood_virginian_eo','virginia cedarwood':'cedarwood_virginian_eo',
+  'cedarwood atlas':'cedarwood_atlas','atlas cedar eo':'cedarwood_atlas','atlas cedarwood':'cedarwood_atlas',
+  // Others
   'frankincense eo':'frankincense_eo','olibanum eo':'frankincense_eo','olibanum resinoid':'frankincense_eo',
   'ylang complete':'ylang_ylang_eo','ylang ylang complete':'ylang_ylang_eo',
   'clove bud':'clove_bud_eo','cloves eo':'clove_bud_eo',
-  'cedarwood atlas':'cedarwood_atlas_eo','atlas cedar eo':'cedarwood_atlas_eo','atlas cedarwood':'cedarwood_atlas_eo',
   'guaiacwood eo':'guaiac_wood','guaiac wood eo':'guaiac_wood','guaiac wood':'guaiac_wood','guaiacwood':'guaiac_wood',
   'tonka bean abs':'tonka_abs','tonka absolute':'tonka_abs','tonka abs':'tonka_abs',
   'ethyl vanillin':'vanillin',
-  'dipropylene glycol':'dpg','dpg':'dpg',
+  'dipropylene glycol':'dpg',
   'ambrette seed abs':'ambrettolide','ambrette':'ambrettolide',
   'muscenone':'muscenone_delta','musk r1':'muscenone_delta',
   'exaltolide total':'exaltolide_total',
   'pink pepper eo':'pink_peppercorn_eo','pink peppercorn':'pink_peppercorn_eo',
   'delta damascone':'dynascone','damascone delta':'dynascone',
-  'phenyl ethyl alcohol':'phenyl_ethyl_alcohol','phenylethyl alcohol':'phenyl_ethyl_alcohol','pea':'phenyl_ethyl_alcohol',
-  'phenethyl alcohol':'phenyl_ethyl_alcohol',
+  // PEA (DB ID: phenyl_ethyl_alc)
+  'phenyl ethyl alcohol':'phenyl_ethyl_alc','phenylethyl alcohol':'phenyl_ethyl_alc',
+  'phenethyl alcohol':'phenyl_ethyl_alc','pea':'phenyl_ethyl_alc',
   'cis 3 hexenol':'cis3_hexenol','leaf alcohol':'cis3_hexenol','cis-3-hexenol':'cis3_hexenol',
   'geranyl acetate':'geranyl_acetate',
   'geranium bourbon':'geranium_eo','geranium egypt':'geranium_eo',
-  'rose absolute':'rose_abs','rose otto':'rose_abs',
+  // Rose (DB ID: rose_absolute)
+  'rose absolute':'rose_absolute','rose otto':'rose_absolute','rose abs':'rose_absolute',
   'neroli':'neroli_eo','orange blossom abs':'neroli_eo',
   'elemi resinoid':'elemi_eo',
   'fir needle':'fir_needle_eo','fir balsam':'fir_balsam_eo','silver fir':'fir_needle_eo',
   'camphor white':'camphor_eo',
-  'sandalwood mysore':'sandalwood_eo',
-  'oud oil':'oud_eo','agarwood':'oud_eo',
+  // Sandalwood (DB ID: sandalwood_australia)
+  'sandalwood mysore':'sandalwood_australia','sandalwood eo':'sandalwood_australia','sandalwood':'sandalwood_australia',
+  // Oud (DB ID: oud_synth)
+  'oud oil':'oud_synth','agarwood':'oud_synth','oud':'oud_synth',
 };
 const IMPORT_SUBS={
   'aldehyde c18 delta lactone':{sub:['aldc14_peach','exaltolide'],ratio:[.6,.4],label:'Ald C18 accord',note:'Peach-lactonic sub: Ald C14 Peach + Exaltolide'},

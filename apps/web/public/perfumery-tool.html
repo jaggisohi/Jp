@@ -173,6 +173,16 @@ header span{font-size:11px;color:var(--muted);font-family:monospace}
 .sub-item{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:3px;border:1px solid var(--border);margin-bottom:3px;cursor:pointer;font-size:11px;background:var(--card)}
 .sub-item:hover{border-color:var(--accent-dim)}
 @media print{header,.modal-overlay,#pp,.panel:first-child,.panel:last-child,.ar,.gi-bar{display:none!important}.app{display:block!important;height:auto!important}.panel{overflow:visible!important;border:none!important}.fi-info,.fdel{display:none!important}.fi{break-inside:avoid}}
+.drop-zone{border:2px dashed var(--border);border-radius:4px;padding:14px;text-align:center;font-size:11px;color:var(--muted);margin-bottom:7px;transition:border-color .18s,background .18s;cursor:pointer;user-select:none}
+.drop-zone.drag-over{border-color:var(--accent);background:rgba(201,169,110,.07)}
+.import-status{display:flex;align-items:flex-start;gap:6px;padding:5px 8px;border-radius:3px;font-size:11px;margin-bottom:3px;line-height:1.4}
+.import-status.ok{background:rgba(95,175,101,.09);border-left:2px solid var(--safe)}
+.import-status.sub{background:rgba(224,128,48,.09);border-left:2px solid var(--warn)}
+.import-status.accord{background:rgba(66,133,244,.09);border-left:2px solid #4285F4}
+.import-status.unknown{background:rgba(208,64,64,.09);border-left:2px solid var(--danger)}
+.import-links{margin-left:auto;display:flex;gap:3px;flex-shrink:0;padding-top:1px}
+.import-link{font-size:9px;padding:2px 5px;border-radius:2px;border:1px solid var(--border);color:var(--accent);text-decoration:none;white-space:nowrap;line-height:1}
+.import-link:hover{border-color:var(--accent)}
 
 </style>
 </head>
@@ -1157,27 +1167,118 @@ function loadFromUrl(){
 }
 
 // ==== IMPORT ====
-function showImport(){openModal('importModal');document.getElementById('importResult').innerHTML='';document.getElementById('importTa').value='';}
-function runImport(){
-  const text=document.getElementById('importTa').value;
-  const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
-  const matched=[],unmatched=[];
-  lines.forEach(line=>{
-    const m=line.match(/^(.+?)[\s:,]+(\d+\.?\d*)%?\s*$/);
-    if(!m){unmatched.push(line);return;}
-    const name=m[1].trim(),pct=parseFloat(m[2]);
-    const found=findMat(name);
-    if(found)matched.push({id:found.id,name:found.name,pct});
-    else unmatched.push(line);
-  });
-  const res=document.getElementById('importResult');
-  let h=matched.map(x=>`<div class="import-matched">✓ ${x.name} → ${x.pct}%</div>`).join('');
-  h+=unmatched.map(x=>`<div class="import-unmatched">✗ No match: ${x}</div>`).join('');
-  if(matched.length){
-    h=`<button class="btn ba" style="margin-bottom:6px" onclick="applyImport(${JSON.stringify(matched).replace(/"/g,'&quot;')})">Apply ${matched.length} matched material${matched.length===1?'':'s'}</button>`+h;
-  }
-  res.innerHTML=h;
+const CAS_MAP={};
+const IMPORT_ALIASES={
+  'ambrox dl':'ambrox_super','ambrox super':'ambrox_super','ambrofix':'ambrox_super','ambrox':'ambrox_super',
+  'dihydromyrcenol':'dihydro_myrcenol','dhm':'dihydro_myrcenol','dihydro myrcenol':'dihydro_myrcenol',
+  'madranol':'javanol','sandalore':'javanol','kovanol':'javanol',
+  'nagarmotha oil':'cypriol_eo','nagarmotha':'cypriol_eo','cypriol':'cypriol_eo','cypriol eo':'cypriol_eo',
+  'galaxolide 50':'galaxolide_undil','galaxolide 50 bbl':'galaxolide_undil','galaxolide':'galaxolide_undil',
+  'lilial replacer':'florhydral','lilial':'florhydral','bourgeonal':'florhydral',
+  'iso e super':'iso_e_super','iso e':'iso_e_super','iso e super 10':'iso_e_super','iso e super givaudan':'iso_e_super',
+  'hedione':'methyl_dihydrojasmonate','hedione hc':'methyl_dihydrojasmonate',
+  'vetiver haiti':'vetiver_eo','haitian vetiver':'vetiver_eo','vetiver eo haiti':'vetiver_eo',
+  'labdanum absolute':'labdanum_abs','labdanum abs':'labdanum_abs','labdanum resinoid':'labdanum_abs',
+  'patchouli heart':'patchouli_eo','patchouli':'patchouli_eo',
+  'bergamot fcf':'bergamot_eo','bergamot':'bergamot_eo',
+  'lemon sicilian':'lemon_eo','lemon eo sicilian':'lemon_eo',
+  'orange sweet':'orange_sweet_eo','sweet orange eo':'orange_sweet_eo',
+  'jasmine sambac abs':'jasmine_abs','jasmine abs':'jasmine_abs','jasmine absolute':'jasmine_abs',
+  'cedarwood virginia':'cedarwood_virginia_eo','cedar virginia eo':'cedarwood_virginia_eo','virginia cedarwood':'cedarwood_virginia_eo',
+  'frankincense eo':'frankincense_eo','olibanum eo':'frankincense_eo','olibanum resinoid':'frankincense_eo',
+  'ylang complete':'ylang_ylang_eo','ylang ylang complete':'ylang_ylang_eo',
+  'clove bud':'clove_bud_eo','cloves eo':'clove_bud_eo',
+  'cedarwood atlas':'cedarwood_atlas_eo','atlas cedar eo':'cedarwood_atlas_eo','atlas cedarwood':'cedarwood_atlas_eo',
+  'guaiacwood eo':'guaiac_wood','guaiac wood eo':'guaiac_wood','guaiac wood':'guaiac_wood','guaiacwood':'guaiac_wood',
+  'tonka bean abs':'tonka_abs','tonka absolute':'tonka_abs','tonka abs':'tonka_abs',
+  'ethyl vanillin':'vanillin',
+  'dipropylene glycol':'dpg','dpg':'dpg',
+  'ambrette seed abs':'ambrettolide','ambrette':'ambrettolide',
+  'muscenone':'muscenone_delta','musk r1':'muscenone_delta',
+  'exaltolide total':'exaltolide_total',
+  'pink pepper eo':'pink_peppercorn_eo','pink peppercorn':'pink_peppercorn_eo',
+  'delta damascone':'dynascone','damascone delta':'dynascone',
+  'phenyl ethyl alcohol':'phenyl_ethyl_alcohol','phenylethyl alcohol':'phenyl_ethyl_alcohol','pea':'phenyl_ethyl_alcohol',
+  'phenethyl alcohol':'phenyl_ethyl_alcohol',
+  'cis 3 hexenol':'cis3_hexenol','leaf alcohol':'cis3_hexenol','cis-3-hexenol':'cis3_hexenol',
+  'geranyl acetate':'geranyl_acetate',
+  'geranium bourbon':'geranium_eo','geranium egypt':'geranium_eo',
+  'rose absolute':'rose_abs','rose otto':'rose_abs',
+  'neroli':'neroli_eo','orange blossom abs':'neroli_eo',
+  'elemi resinoid':'elemi_eo',
+  'fir needle':'fir_needle_eo','fir balsam':'fir_balsam_eo','silver fir':'fir_needle_eo',
+  'camphor white':'camphor_eo',
+  'sandalwood mysore':'sandalwood_eo',
+  'oud oil':'oud_eo','agarwood':'oud_eo',
+};
+const IMPORT_SUBS={
+  'aldehyde c18 delta lactone':{sub:['aldc14_peach','exaltolide'],ratio:[.6,.4],label:'Ald C18 accord',note:'Peach-lactonic sub: Ald C14 Peach + Exaltolide'},
+  'aldehyde c18':{sub:['aldc14_peach','exaltolide'],ratio:[.6,.4],label:'Ald C18 accord',note:'Peach-lactonic accord: Ald C14 Peach + Exaltolide'},
+  'alpha pinene':{sub:'fir_needle_eo',label:'α-Pinene sub',note:'Fir Needle EO — conifer/pine profile'},
+  'beta pinene':{sub:'fir_needle_eo',label:'β-Pinene sub',note:'Fir Needle EO — bright conifer sub'},
+  'ambermax':{sub:['ambrox_super','ambrinol'],ratio:[.6,.4],label:'Ambermax accord',note:'Ambrox Super warmth + Ambrinol cedar-amber'},
+  'osyrol':{sub:'javanol',label:'Osyrol → Javanol',note:'Javanol covers the warm sandalwood-woody profile'},
+  'liffarome leafovert':{sub:'cis3_hexenol',label:'Leafovert sub',note:'Green-leaf sub: cis-3-Hexenol'},
+  'prunella base':{sub:['cis3_hexenol','galbanum_eo'],ratio:[.5,.5],label:'Prunella accord',note:'Green-herbal: Green Leaf Alcohol + Galbanum EO'},
+  'hexyl acetate':{sub:'allyl_caproate_c6',label:'Hexyl Acetate sub',note:'Fruity-green sub: Allyl Caproate C6'},
+  'gamma decalactone':{sub:'aldc14_peach',label:'γ-Decalactone sub',note:'Peach lactone sub: Ald C14 Peach'},
+  'gamma-decalactone':{sub:'aldc14_peach',label:'γ-Decalactone sub',note:'Peach lactone sub: Ald C14 Peach'},
+  'gurjun balsam':{sub:'guaiac_wood',label:'Gurjun Balsam sub',note:'Woody balsamic sub: Guaiac Wood EO'},
+  'amberwood f':{sub:['ambrox_super','benzyl_salicylate'],ratio:[.65,.35],label:'Amberwood accord',note:'Amber-woody: Ambrox Super + Benzyl Salicylate'},
+  'methyl jasmonate':{sub:'methyl_dihydrojasmonate',label:'Methyl Jasmonate sub',note:'Jasmine sub: Hedione (Methyl Dihydrojasmonate)'},
+  'methyl jasmonate firmenich':{sub:'methyl_dihydrojasmonate',label:'Methyl Jasmonate sub',note:'Jasmine sub: Hedione (Methyl Dihydrojasmonate)'},
+  'borneol':{sub:'camphor_eo',label:'Borneol sub',note:'Camphoraceous sub: Camphor EO'},
+  'florantone t':{sub:['florhydral','cis3_hexenol'],ratio:[.7,.3],label:'Florantone accord',note:'Floral-green: Florhydral + Green Leaf Alcohol'},
+  'vanilla absolute':{sub:'vanillin',label:'Vanilla Abs sub',note:'Vanillin — higher impact, reduce % by ~50%'},
+  'vanilla abs':{sub:'vanillin',label:'Vanilla Abs sub',note:'Vanillin — higher impact, reduce % by ~50%'},
+  'dihydro jasmone':{sub:'cis_jasmone_lactone',label:'Dihydro Jasmone sub',note:'Jasmine-green: cis-Jasmone Lactone'},
+  'dihydrojasmone':{sub:'cis_jasmone_lactone',label:'Dihydro Jasmone sub',note:'Jasmine-green: cis-Jasmone Lactone'},
+  'iso propyl myristate':{sub:'dpg',label:'IPM → DPG',note:'Carrier sub: DPG as solvent/diluent'},
+  'isopropyl myristate':{sub:'dpg',label:'IPM → DPG',note:'Carrier sub: DPG as solvent/diluent'},
+};
+
+function cleanImportName(s){
+  return s.toLowerCase()
+    .replace(/\([^)]*\)/g,' ')
+    .replace(/\b(eo|abs|absolute|resinoid|10%|50%|undil|undiluted|type|from fraterworks|from givaudan|from iff|from firmenich|organic|sicilian|haiti|bourbon|mysore)\b/gi,' ')
+    .replace(/[^a-z0-9 \-]/g,' ')
+    .replace(/\s+/g,' ').trim();
 }
+
+function parseFormulaText(text){
+  const lines=text.split('\n').map(l=>l.trim()).filter(l=>l&&!/^[#;]/.test(l));
+  const entries=[];
+  const laytonPat=/^(\d+[.,]\d+)\s+(.+?)\s+(\d{2,6}-\d{2}-\d)$/;
+  const laytonNoCas=/^(\d+[.,]\d+)\s+(.+)$/;
+  const carlislePat=/^([A-Za-z].+?)\s{2,}(\d+[,.]?\d*)\s*$/;
+  const genericPat=/^(.+?)[\s:,]+(\d+[.,]?\d*)%?\s*$/;
+  const sampleLines=lines.filter(l=>/\d/.test(l)).slice(0,6);
+  const isLayton=sampleLines.some(l=>laytonPat.test(l)||(/^\d+[.,]\d+\s/.test(l)&&l.split(/\s+/).length>=2));
+  const isCarlisle=!isLayton&&sampleLines.some(l=>carlislePat.test(l));
+  let totalRaw=0;
+  for(const line of lines){
+    let name='',pct=0,cas='';
+    if(isLayton){
+      const m=line.match(laytonPat);
+      if(m){pct=parseFloat(m[1].replace(',','.'));name=m[2].trim();cas=m[3];}
+      else{const m2=line.match(laytonNoCas);if(m2&&parseFloat(m2[1])>0){pct=parseFloat(m2[1].replace(',','.'));name=m2[2].trim();}else continue;}
+    } else if(isCarlisle){
+      const m=line.match(carlislePat);if(!m)continue;
+      name=m[1].trim();pct=parseFloat(m[2].replace(',','.'));
+    } else {
+      const m=line.match(genericPat);if(!m)continue;
+      name=m[1].trim();pct=parseFloat(m[2].replace(',','.'));
+    }
+    if(isNaN(pct)||pct<=0)continue;
+    totalRaw+=pct;
+    entries.push({name,pct,cas});
+  }
+  if(isCarlisle&&totalRaw>200)entries.forEach(e=>e.pct=parseFloat((e.pct/10).toFixed(4)));
+  const total=entries.reduce((s,e)=>s+e.pct,0);
+  if(total>0&&(total<80||total>120)){const f=100/total;entries.forEach(e=>e.pct=parseFloat((e.pct*f).toFixed(4)));}
+  return entries;
+}
+
 function findMat(name){
   const q=name.toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
   const synId=SYNONYMS[q];if(synId){const m=byId(synId);if(m)return m;}
@@ -1186,10 +1287,99 @@ function findMat(name){
   const partial=DB.find(m=>m.name.toLowerCase().includes(q)||q.includes(m.name.toLowerCase().replace(/\s*(eo|abs|resinoid)$/i,'').trim()));
   return partial||null;
 }
-function applyImport(matched){
-  if(typeof matched==='string')matched=JSON.parse(matched);
-  pushUndo();matched.forEach(x=>{formula[x.id]=String(x.pct);});
+
+function resolveImportMat(entry){
+  const{name,pct,cas}=entry;
+  if(cas&&CAS_MAP[cas.trim()]){const m=byId(CAS_MAP[cas.trim()]);if(m)return{status:'ok',mat:m,pct,note:'CAS match'};}
+  const cleanName=cleanImportName(name);
+  if(IMPORT_ALIASES[cleanName]){const m=byId(IMPORT_ALIASES[cleanName]);if(m)return{status:'ok',mat:m,pct,note:'alias match'};}
+  const found=findMat(name);
+  if(found)return{status:'ok',mat:found,pct,note:'name match'};
+  if(IMPORT_SUBS[cleanName]){
+    const sub=IMPORT_SUBS[cleanName];
+    if(typeof sub.sub==='string'){const m=byId(sub.sub);if(m)return{status:'sub',mat:m,pct,label:sub.label,note:sub.note,origName:name};}
+    else{const mats=sub.sub.map((id,i)=>({m:byId(id),ratio:sub.ratio[i]})).filter(x=>x.m);if(mats.length)return{status:'accord',mats,pct,label:sub.label,note:sub.note,origName:name};}
+  }
+  return{status:'unknown',origName:name,pct,cas,cleanName};
+}
+
+function runSmartImport(){
+  const text=document.getElementById('importTa').value;
+  if(!text.trim()){document.getElementById('importResult').innerHTML='<div style="font-size:11px;color:var(--muted)">Paste formula text above first.</div>';return;}
+  const entries=parseFormulaText(text);
+  if(!entries.length){document.getElementById('importResult').innerHTML='<div style="font-size:11px;color:var(--danger)">Could not parse any lines. Try: <code style="background:var(--card);padding:1px 4px">Material Name: 5.5</code></div>';return;}
+  const results=entries.map(e=>resolveImportMat(e));
+  window._importResults=results;
+  renderImportResults(results);
+}
+
+function renderImportResults(results){
+  const res=document.getElementById('importResult');
+  const ok=results.filter(r=>r.status==='ok').length;
+  const sub=results.filter(r=>r.status==='sub').length;
+  const acc=results.filter(r=>r.status==='accord').length;
+  const unk=results.filter(r=>r.status==='unknown').length;
+  let h=`<div style="font-size:11px;margin-bottom:7px;color:var(--muted)"><b style="color:var(--text)">${results.length} lines parsed</b> — ✅ ${ok} matched &nbsp;🔄 ${sub} substituted &nbsp;🎵 ${acc} accorded &nbsp;❓ ${unk} unknown</div>`;
+  if(ok+sub+acc>0){
+    h+=`<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+      <button class="btn ba" onclick="applySmartImport('all')">Apply All (${ok+sub+acc})</button>
+      ${ok>0?`<button class="btn bo" onclick="applySmartImport('matched_only')">Matched Only (${ok})</button>`:''}
+      <button class="btn bo" onclick="closeModal('importModal')">Cancel</button>
+    </div>`;
+  }
+  results.forEach(r=>{
+    const pctStr=r.pct?` ${r.pct.toFixed(2)}%`:'';
+    if(r.status==='ok'){
+      const tgsc=`https://www.thegoodscentscompany.com/search2.php?qName=${encodeURIComponent(r.mat.name)}`;
+      const pc=r.mat.cas?`https://pubchem.ncbi.nlm.nih.gov/compound/${r.mat.cas.replace(/-/g,'')}`:null;
+      h+=`<div class="import-status ok"><span>✅</span><span style="flex:1"><b>${r.mat.name}</b><span class="pctStr">${pctStr}</span> <span style="color:var(--muted);font-size:9px">${r.note}</span></span><span class="import-links"><a class="import-link" href="${tgsc}" target="_blank">TGSC↗</a>${pc?`<a class="import-link" href="${pc}" target="_blank">PubChem↗</a>`:''}</span></div>`;
+    } else if(r.status==='sub'){
+      const tgsc=`https://www.thegoodscentscompany.com/search2.php?qName=${encodeURIComponent(r.mat.name)}`;
+      h+=`<div class="import-status sub"><span>🔄</span><span style="flex:1"><b>${r.origName}</b> →<b style="color:var(--text)"> ${r.mat.name}</b>${pctStr}<div style="font-size:10px;color:var(--muted);margin-top:2px">${r.note}</div></span><span class="import-links"><a class="import-link" href="${tgsc}" target="_blank">TGSC↗</a></span></div>`;
+    } else if(r.status==='accord'){
+      const matsStr=r.mats.map(x=>`${x.m.name} (${(r.pct*x.ratio).toFixed(2)}%)`).join(' + ');
+      h+=`<div class="import-status accord"><span>🎵</span><span style="flex:1"><b>${r.origName}</b>${pctStr} → accord<div style="font-size:10px;color:var(--muted);margin-top:2px">${matsStr}</div><div style="font-size:10px;color:var(--muted)">${r.note}</div></span></div>`;
+    } else {
+      const tgsc=`https://www.thegoodscentscompany.com/search2.php?qName=${encodeURIComponent(r.origName)}`;
+      const pc=r.cas?`https://pubchem.ncbi.nlm.nih.gov/compound/${r.cas.replace(/-/g,'')}`:null;
+      h+=`<div class="import-status unknown"><span>❓</span><span style="flex:1"><b>${r.origName}</b>${pctStr} <span style="color:var(--muted);font-size:9px">not in palette</span></span><span class="import-links"><a class="import-link" href="${tgsc}" target="_blank">TGSC↗</a>${pc?`<a class="import-link" href="${pc}" target="_blank">PubChem↗</a>`:''}</span></div>`;
+    }
+  });
+  res.innerHTML=h;
+}
+
+function applySmartImport(mode){
+  const results=window._importResults||[];
+  pushUndo();
+  results.forEach(r=>{
+    if((r.status==='ok')||(r.status==='sub'&&mode==='all')){formula[r.mat.id]=String(r.pct.toFixed(2));}
+    else if(r.status==='accord'&&mode==='all'){r.mats.forEach(x=>{formula[x.m.id]=String((r.pct*x.ratio).toFixed(2));});}
+  });
   renderFormula();renderMats();closeModal('importModal');
+}
+
+function showImport(){
+  openModal('importModal');
+  document.getElementById('importResult').innerHTML='';
+  document.getElementById('importTa').value='';
+}
+
+function handleImportFile(f){
+  if(!f)return;
+  const ext=(f.name.split('.').pop()||'').toLowerCase();
+  if(ext==='txt'||ext==='csv'||f.type==='text/plain'){
+    const reader=new FileReader();
+    reader.onload=e=>{document.getElementById('importTa').value=e.target.result;runSmartImport();};
+    reader.readAsText(f);
+  } else {
+    document.getElementById('importResult').innerHTML='<div style="font-size:11px;color:var(--warn)">Only .txt/.csv files can be dropped. For PDFs, copy-paste the formula text into the box above.</div>';
+  }
+}
+
+function handleImportDrop(e){
+  e.preventDefault();
+  document.getElementById('importDrop').classList.remove('drag-over');
+  handleImportFile(e.dataTransfer&&e.dataTransfer.files[0]);
 }
 
 // ==== PRESETS ====
@@ -1289,6 +1479,7 @@ function exportCsv(){
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name.replace(/\s+/g,'_')+'.csv';a.click();
 }
 
+DB.forEach(m=>{if(m.cas)CAS_MAP[m.cas.trim()]=m.id;});
 if(!loadFromUrl())loadCurrent();
 renderPills();renderMats();renderFormula();
 </script>
@@ -1305,15 +1496,26 @@ renderPills();renderMats();renderFormula();
   </div>
 </div>
 <div class="modal-overlay" id="importModal" onclick="if(event.target===this)closeModal('importModal')">
-  <div class="modal-card">
-    <div class="modal-head"><div class="modal-title">📥 Import Formula Text</div><button class="modal-close" onclick="closeModal('importModal')">×</button></div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Paste lines like <code style="background:var(--card);padding:1px 4px;border-radius:2px">Bergamot FCF: 5%</code> or <code style="background:var(--card);padding:1px 4px;border-radius:2px">Iso E Super 3.5</code></div>
-    <textarea class="import-ta" id="importTa" placeholder="Bergamot FCF: 5%&#10;Iso E Super: 3.5&#10;Habanolide 2%&#10;Patchouli EO: 1.5"></textarea>
-    <div style="display:flex;gap:6px">
-      <button class="btn ba" onclick="runImport()">Match Materials</button>
+  <div class="modal-card" style="width:min(620px,100%)">
+    <div class="modal-head"><div class="modal-title">📥 Smart Formula Import</div><button class="modal-close" onclick="closeModal('importModal')">×</button></div>
+    <div style="font-size:10px;color:var(--muted);margin-bottom:8px;line-height:1.55">
+      Auto-detects Carlisle (Name → Amount, total÷10), Layton (Amount Name CAS), or generic paste.<br>
+      ✅ Direct match &nbsp;·&nbsp; 🔄 Substituted with palette equivalent &nbsp;·&nbsp; 🎵 Accord built &nbsp;·&nbsp; ❓ Not in palette (TGSC link provided)
+    </div>
+    <div class="drop-zone" id="importDrop"
+      ondragover="event.preventDefault();this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="handleImportDrop(event)"
+      onclick="document.getElementById('importFile').click()">
+      <input type="file" id="importFile" accept=".txt,.csv" style="display:none" onchange="handleImportFile(this.files[0])">
+      📂 Drop .txt / .csv here, or click to browse
+    </div>
+    <textarea class="import-ta" id="importTa" style="height:130px" placeholder="Paste formula text in any format:&#10;&#10;  Bergamot FCF: 5%          (generic)&#10;  Iso E Super 3.5&#10;&#10;  0.50   Ambrox DL   3058-48-8   (Layton)&#10;&#10;  Patchouli EO          100,50      (Carlisle)"></textarea>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn ba" onclick="runSmartImport()">Analyse Formula</button>
       <button class="btn bo" onclick="closeModal('importModal')">Cancel</button>
     </div>
-    <div class="import-result" id="importResult"></div>
+    <div class="import-result" id="importResult" style="max-height:260px"></div>
   </div>
 </div>
 <div class="modal-overlay" id="presetsModal" onclick="if(event.target===this)closeModal('presetsModal')">
